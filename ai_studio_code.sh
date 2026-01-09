@@ -1,3 +1,3 @@
 git add .
-git commit -m "Correção Final Helonex Vercel"
+git commit -m "Cleanup index html"
 git push
