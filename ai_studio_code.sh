@@ -1,3 +1,3 @@
 git add .
-git commit -m "Fix Vercel Config"
+git commit -m "Correção Final Helonex Vercel"
 git push
