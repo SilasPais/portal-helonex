@@ -1,4 +1,28 @@
-
+/**
+ * COMPONENTE: ClientDashboard
+ * VERSÃO: 1.0 (Ecossistema Helonex 2026)
+ * * PROPÓSITO:
+ * Atuar como a Central de Comando (Cockpit) do usuário logado no portal. 
+ * O objetivo principal é consolidar em uma única interface os 4 Pilares do 
+ * ecossistema: GovTech, JusTech, EduTech e GestTech.
+ * * FUNCIONALIDADES:
+ * - Monitoramento de Saúde Operacional: Integração com o motor de regras Guardian para 
+ * exibição de conformidade (ANTT/RNTRC) e riscos legais em tempo real.
+ * - Gestão de Riscos Táticos: Interface com a Torre de Controle (RiskMonitor) para 
+ * gerenciamento de crises e segurança patrimonial.
+ * - Inteligência Financeira: Módulo de Valuation que diferencia ativos tangíveis 
+ * e intangíveis, gerando o rating patrimonial da transportadora.
+ * - Fator Humano: Conexão com Neuro-Telemetria (fadiga/atenção) e gestão de 
+ * desempenho de motoristas (RhTec).
+ * - Mapeamento Geográfico: Visualização de rotas com camadas de risco e hubs logísticos.
+ * * DEPENDÊNCIAS:
+ * - Local: '../types' (Enums e Interfaces), '../services/guardianSystem' (API de Dados).
+ * - Componentes: Header, GuardianSeal, NeuroTelemetry, RiskMonitor, QualityManagement, etc.
+ * - Bibliotecas: Lucide-React (Ícones), Recharts (Gráficos).
+ * * LÓGICA DE NAVEGAÇÃO:
+ * Utiliza o estado 'activeTab' para renderização condicional dos módulos especializados, 
+ * garantindo uma interface leve (SPA) e de rápida resposta para o gestor.
+ */
 import React, { useEffect, useState } from 'react';
 import { 
   Truck, FileCheck, AlertTriangle, Calendar, Plus, 
