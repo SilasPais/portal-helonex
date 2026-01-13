@@ -365,6 +365,19 @@ export interface FreightDemand {
   description: string;
 }
 
+// Risk Monitor Types
+export interface RiskEvent {
+  id: string;
+  type: 'THEFT' | 'ACCIDENT' | 'JAMMING' | 'STOP' | 'ROUTE_DEVIATION' | 'DOOR_OPEN';
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  vehicleId: string;
+  plate: string;
+  driverName: string;
+  location: string;
+  timestamp: Date;
+  status: 'ACTIVE' | 'RESOLVED' | 'INVESTIGATING';
+}
+
 // Placeholder interfaces
 export interface GovData {}
 export interface Infraction {}
