@@ -1,12 +1,12 @@
-import React, { ReactNode, Component, ErrorInfo } from 'react';
+
+import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css'; // Garantindo que estilos sejam carregados se existirem
 
 // --- MECANISMO DE SEGURANÇA GLOBAL ---
-// Se o React falhar totalmente, isso garante que o usuário veja algo.
+// Se o React falhar totalmente, isso garante que o usuário veja algo e possa resetar.
 window.onerror = function(message, source, lineno, colno, error) {
-  console.error("Global Error Caught in index.tsx:", message);
+  console.error("Global Error Caught:", message);
   const root = document.getElementById('root');
   if (root && root.innerHTML === '') {
      root.innerHTML = `
@@ -22,7 +22,7 @@ window.onerror = function(message, source, lineno, colno, error) {
 };
 
 interface ErrorBoundaryProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 interface ErrorBoundaryState {
@@ -30,28 +30,22 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-// Error Boundary Component para capturar falhas e permitir reset
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  public state: ErrorBoundaryState;
-
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null
-    };
-  }
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = {
+    hasError: false,
+    error: null
+  };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
   }
 
   handleReset = () => {
-    localStorage.removeItem('guardian_db'); // Limpa dados corrompidos
+    localStorage.removeItem('guardian_db');
     window.location.reload();
   };
 
@@ -59,9 +53,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.hasError) {
       return (
         <div style={{ padding: '40px', backgroundColor: '#0f172a', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}>
-          <h1 style={{ fontSize: '24px', marginBottom: '16px', color: '#ef4444' }}>O Sistema Encontrou um Erro Inesperado</h1>
+          <h1 style={{ fontSize: '24px', marginBottom: '16px', color: '#ef4444' }}>O Sistema Encontrou um Erro</h1>
           <p style={{ marginBottom: '24px', color: '#94a3b8', textAlign: 'center', maxWidth: '500px' }}>
-            Isso geralmente ocorre devido a dados antigos salvos no navegador que conflitam com a nova versão do sistema.
+            Isso geralmente ocorre devido a dados antigos salvos ou falha de conexão.
           </p>
           <div style={{ backgroundColor: '#1e293b', padding: '16px', borderRadius: '8px', marginBottom: '24px', fontSize: '12px', fontFamily: 'monospace', maxWidth: '80%', overflow: 'auto' }}>
             {this.state.error?.toString()}
@@ -70,7 +64,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             onClick={this.handleReset}
             style={{ padding: '12px 24px', backgroundColor: '#f59e0b', color: '#0f172a', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
           >
-            LIMPAR DADOS E REINICIAR (RESOLVER)
+            LIMPAR DADOS E REINICIAR
           </button>
         </div>
       );
