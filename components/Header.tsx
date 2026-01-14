@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Section, Language } from '../types';
-import { Menu, X, Truck, GraduationCap, ShieldCheck, Cpu, Zap, User, LogOut, LayoutDashboard, Users } from 'lucide-react';
+import { Menu, X, Truck, GraduationCap, ShieldCheck, Cpu, Zap, User, LogOut, LayoutDashboard, Users, Sun } from 'lucide-react';
 
 interface HeaderProps {
   activeSection: Section;
@@ -17,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
   const t = {
     pt: {
       home: 'Início',
-      services: 'Soluções GovTech',
+      services: 'Serviços',
       academy: 'Academia',
       community: 'Comunidade',
       mentor: 'Mentor IA',
@@ -27,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
     },
     es: {
       home: 'Inicio',
-      services: 'Soluciones',
+      services: 'Servicios',
       academy: 'Academia',
       community: 'Comunidad',
       mentor: 'Mentor IA',
@@ -64,21 +65,21 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* LOGO MASTER HELONEX */}
+          {/* LOGO HELONEX */}
           <div 
             className="flex items-center cursor-pointer group" 
             onClick={() => handleNav(Section.HOME)}
             title="Voltar ao Início"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-hlx-gold to-orange-600 rounded-lg flex items-center justify-center mr-3 shadow-lg border border-white/10 group-hover:scale-110 transition-transform">
-              <ShieldCheck size={24} className="text-slate-900" />
+            <div className="w-10 h-10 bg-gradient-to-br from-hlx-gold to-orange-600 rounded-lg flex items-center justify-center mr-3 shadow-lg border border-white/10 group-hover:rotate-12 transition-transform">
+              <Sun className="text-white" size={24} />
             </div>
             <div>
               <h1 className="font-display font-bold text-2xl tracking-wide text-white flex items-center gap-1">
-                PORTAL <span className="text-hlx-gold">HELONEX</span>
+                HELO<span className="text-hlx-gold">NEX</span>
               </h1>
               <p className="text-[9px] text-gray-400 font-bold tracking-[0.1em] uppercase hidden sm:block">
-                INTELLIGENCE SYSTEM 2026
+                INTELIGÊNCIA LOGÍSTICA & GOVTECH
               </p>
             </div>
           </div>
@@ -103,11 +104,6 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
             </nav>
             
             <div className="h-6 w-px bg-white/20 mx-2"></div>
-
-            <div className="flex items-center bg-slate-800 rounded-lg p-1 border border-white/10">
-              <button onClick={() => setLanguage('pt')} className={`px-2 py-1 rounded text-[10px] font-bold ${language === 'pt' ? 'bg-hlx-gold text-slate-900' : 'text-gray-400 hover:text-white'}`}>BR</button>
-              <button onClick={() => setLanguage('es')} className={`px-2 py-1 rounded text-[10px] font-bold ${language === 'es' ? 'bg-hlx-gold text-slate-900' : 'text-gray-400 hover:text-white'}`}>ES</button>
-            </div>
 
             <div className="flex items-center gap-3">
                {isLoggedIn ? (
@@ -138,7 +134,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
                   </button>
                   <button
                     onClick={() => handleNav(Section.OPPORTUNITY)}
-                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-lg shadow-green-500/20"
+                    className="bg-hlx-gold hover:bg-yellow-400 text-slate-900 px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-lg shadow-yellow-500/20"
                   >
                     <Zap size={14} />
                     {t[language].subscribe}
@@ -182,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
                  {!isLoggedIn ? (
                    <>
                     <button onClick={() => handleNav(Section.LOGIN)} className="p-3 bg-slate-800 rounded-lg text-white font-bold text-xs text-center border border-white/10">Entrar</button>
-                    <button onClick={() => handleNav(Section.OPPORTUNITY)} className="p-3 bg-green-600 rounded-lg text-white font-bold text-xs text-center shadow-lg">Assinar</button>
+                    <button onClick={() => handleNav(Section.OPPORTUNITY)} className="p-3 bg-hlx-gold rounded-lg text-slate-900 font-bold text-xs text-center shadow-lg">Assinar</button>
                    </>
                  ) : (
                     <button onClick={handleLogoutClick} className="col-span-2 p-3 bg-red-500/20 text-red-400 rounded-lg font-bold text-xs text-center border border-red-500/30">Sair</button>
