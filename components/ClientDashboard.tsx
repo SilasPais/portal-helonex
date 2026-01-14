@@ -1,35 +1,11 @@
-/**
- * COMPONENTE: ClientDashboard
- * VERSÃO: 1.0 (Ecossistema Helonex 2026)
- * * PROPÓSITO:
- * Atuar como a Central de Comando (Cockpit) do usuário logado no portal. 
- * O objetivo principal é consolidar em uma única interface os 4 Pilares do 
- * ecossistema: GovTech, JusTech, EduTech e GestTech.
- * * FUNCIONALIDADES:
- * - Monitoramento de Saúde Operacional: Integração com o motor de regras Guardian para 
- * exibição de conformidade (ANTT/RNTRC) e riscos legais em tempo real.
- * - Gestão de Riscos Táticos: Interface com a Torre de Controle (RiskMonitor) para 
- * gerenciamento de crises e segurança patrimonial.
- * - Inteligência Financeira: Módulo de Valuation que diferencia ativos tangíveis 
- * e intangíveis, gerando o rating patrimonial da transportadora.
- * - Fator Humano: Conexão com Neuro-Telemetria (fadiga/atenção) e gestão de 
- * desempenho de motoristas (RhTec).
- * - Mapeamento Geográfico: Visualização de rotas com camadas de risco e hubs logísticos.
- * * DEPENDÊNCIAS:
- * - Local: '../types' (Enums e Interfaces), '../services/guardianSystem' (API de Dados).
- * - Componentes: Header, GuardianSeal, NeuroTelemetry, RiskMonitor, QualityManagement, etc.
- * - Bibliotecas: Lucide-React (Ícones), Recharts (Gráficos).
- * * LÓGICA DE NAVEGAÇÃO:
- * Utiliza o estado 'activeTab' para renderização condicional dos módulos especializados, 
- * garantindo uma interface leve (SPA) e de rápida resposta para o gestor.
- */
+
 import React, { useEffect, useState } from 'react';
 import { 
   Truck, FileCheck, AlertTriangle, Calendar, Plus, 
   ShieldCheck, TrendingUp, AlertOctagon, Zap, Search, MoreHorizontal, X, ExternalLink, BookOpen, Trophy, ArrowRight, GraduationCap, Lock, Key, CreditCard,
   FileKey, RefreshCw, Landmark, Siren, Building2, Eye, BrainCircuit, Activity, Scale, Gavel, FileText, Printer, Calculator, Download, DollarSign, Wallet,
   Receipt, ShoppingCart, Users, UserCheck, Stethoscope, Clock, ShieldAlert, CheckCircle2, PlayCircle, MapPin, ZapOff, Anchor, Pill, Gauge, Trash2, HardHat, Percent, UserPlus, GaugeCircle, Info, Flame, AlertCircle, Leaf, Scan, Camera, QrCode, Wifi, Settings, Signal, HelpCircle, Server, Smartphone, Cpu, Cable, Router, User, List, UploadCloud, FileInput, CheckSquare, ClipboardList, Bookmark, LifeBuoy, Send, MessageSquare, ChevronRight, Tag,
-  Sparkles, Star, Ban, FileWarning, Plane, Coins, Repeat, Globe, Sun, Briefcase, Thermometer, Armchair, Smile, Cloud, HeartPulse, Wrench, RefreshCcw, Bell, CheckSquare as ChecklistIcon, Target, Map, Heart, Gem, PieChart, Award, Medal, HeartHandshake, Microscope, Database, Radar
+  Sparkles, Star, Ban, FileWarning, Plane, Coins, Repeat, Globe, Sun, Briefcase, Thermometer, Armchair, Smile, Cloud, HeartPulse, Wrench, RefreshCcw, Bell, CheckSquare as ChecklistIcon, Target, Map, Heart, Gem, PieChart, Award, Medal, HeartHandshake, Microscope, Database
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar 
@@ -116,7 +92,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ onNavigateToSuccess }
         <div className="flex overflow-x-auto pb-4 gap-2 mb-6 custom-scrollbar">
            {[
              { id: 'audit_center', label: 'Central de Auditoria', icon: ShieldCheck },
-             { id: 'risk_monitor', label: 'Torre de Controle', icon: Radar },
+             { id: 'risk_monitor', label: 'Torre de Controle', icon: Target }, // Alterado de Radar para Target para segurança
              { id: 'quality', label: 'Gestão da Qualidade', icon: CheckSquare },
              { id: 'integrations', label: 'Integrações (API)', icon: Cable },
              { id: 'rhtec', label: 'RhTec & Motoristas', icon: HeartHandshake },

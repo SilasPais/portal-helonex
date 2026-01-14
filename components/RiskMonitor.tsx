@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldAlert, Radio, AlertTriangle, Lock, Unlock, MapPin, 
   Navigation, Crosshair, Siren, PhoneCall, CheckCircle, Activity, 
-  Skull, WifiOff, ThermometerSun, Truck, X
+  AlertOctagon, Wifi, Thermometer, Truck, X
 } from 'lucide-react';
 import { RiskEvent } from '../types';
 
@@ -12,7 +12,6 @@ const RiskMonitor: React.FC = () => {
   const [events, setEvents] = useState<RiskEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<RiskEvent | null>(null);
 
-  // Simulação de Feed de Dados em Tempo Real (Websocket Mock)
   useEffect(() => {
     const mockEvents: RiskEvent[] = [
       {
@@ -41,7 +40,6 @@ const RiskMonitor: React.FC = () => {
     setEvents(mockEvents);
     setThreatLevel('HIGH');
 
-    // Simula entrada de novos eventos
     const interval = setInterval(() => {
       if (Math.random() > 0.7) {
         const newEvent: RiskEvent = {
@@ -64,8 +62,8 @@ const RiskMonitor: React.FC = () => {
 
   const getEventIcon = (type: string) => {
     switch (type) {
-      case 'THEFT': return <Skull size={18} />;
-      case 'JAMMING': return <WifiOff size={18} />;
+      case 'THEFT': return <AlertOctagon size={18} />; // Trocado Skull por AlertOctagon (Safe)
+      case 'JAMMING': return <Wifi size={18} />; // Trocado WifiOff por Wifi (Safe)
       case 'ACCIDENT': return <Siren size={18} />;
       case 'DOOR_OPEN': return <Unlock size={18} />;
       default: return <AlertTriangle size={18} />;

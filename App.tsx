@@ -28,6 +28,7 @@ import NewsBoard from './components/NewsBoard';
 import SassmaqSection from './components/SassmaqSection';
 import AboutSection from './components/AboutSection';
 import StrategicRoadmap from './components/StrategicRoadmap';
+import SuccessRoute from './components/SuccessRoute';
 import { Section, UserRole, Language } from './types';
 
 const App: React.FC = () => {
@@ -117,7 +118,7 @@ const App: React.FC = () => {
 
     if (activeSection === Section.CLIENT_PANEL) {
       if (userRole === 'visitor') return <LoginScreen onLogin={handleLogin} onBack={() => setActiveSection(Section.HOME)} />;
-      return <ClientDashboard />;
+      return <ClientDashboard onNavigateToSuccess={() => setActiveSection(Section.SUCCESS_ROUTE)} />;
     }
 
     if (activeSection === Section.SHIPPER_PANEL) {
@@ -138,6 +139,10 @@ const App: React.FC = () => {
 
     if (activeSection === Section.STRATEGIC_ROADMAP) {
       return <StrategicRoadmap onCtaClick={() => setActiveSection(Section.LOGIN)} onBack={() => setActiveSection(Section.HOME)} />;
+    }
+
+    if (activeSection === Section.SUCCESS_ROUTE) {
+      return <SuccessRoute onBack={() => setActiveSection(userRole !== 'visitor' ? Section.CLIENT_PANEL : Section.HOME)} />;
     }
 
     switch (activeSection) {
@@ -210,7 +215,7 @@ const App: React.FC = () => {
         return <AcademySection onNavigateToMap={() => setActiveSection(Section.INTERNATIONAL_MAP)} />; 
       case Section.DASHBOARD:
         if (userRole !== 'visitor') {
-           return <ClientDashboard />;
+           return <ClientDashboard onNavigateToSuccess={() => setActiveSection(Section.SUCCESS_ROUTE)} />;
         }
         return <Base44Dashboard />;
       case Section.MENTOR:
@@ -253,7 +258,7 @@ const App: React.FC = () => {
         setLanguage={setLanguage}
       />
       
-      {activeSection !== Section.HOME && activeSection !== Section.LOGIN && activeSection !== Section.REGISTER && activeSection !== Section.STRATEGIC_ROADMAP && (
+      {activeSection !== Section.HOME && activeSection !== Section.LOGIN && activeSection !== Section.REGISTER && activeSection !== Section.STRATEGIC_ROADMAP && activeSection !== Section.SUCCESS_ROUTE && (
         <Breadcrumbs activeSection={activeSection} onNavigate={setActiveSection} />
       )}
 
