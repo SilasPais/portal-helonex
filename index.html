@@ -1,65 +1,51 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Portal HELONEX - Inteligência Logística</title>
-    <meta name="description" content="Ecossistema HELONEX: A Maior Plataforma de Inteligência Logística, GovTech e Gestão de Frota do Planeta." />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚛</text></svg>" />
+    <title>HELONEX - Inteligência Logística Soberana</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Fontes -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              display: ['Oswald', 'sans-serif'],
-            },
-            colors: {
-              hlx: { 
-                navy: '#0f172a', 
-                blue: '#1e40af', 
-                gold: '#f59e0b', 
-                orange: '#ea580c', 
-                light: '#f8fafc'
-              }
-            },
-            animation: {
-              'fade-in-up': 'fadeInUp 0.5s ease-out',
-              'fade-in-down': 'fadeInDown 0.5s ease-out',
-              'spin-slow': 'spin 3s linear infinite',
-              'float-slow': 'float 6s ease-in-out infinite',
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            },
-            keyframes: {
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              fadeInDown: {
-                '0%': { opacity: '0', transform: 'translateY(-20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              }
-            }
+            fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+            colors: { hlx: { navy: '#0f172a', gold: '#f59e0b', blue: '#1e40af', orange: '#f97316' } }
           }
         }
       }
     </script>
     
     <style>
-      :root { background-color: #0f172a; }
-      html, body { background-color: #0f172a; color: #f8fafc; height: 100%; margin: 0; padding: 0; }
-      #root { min-height: 100vh; width: 100%; }
-      .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-      .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-      .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+      body { background-color: #0f172a; color: white; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+      #root { min-height: 100vh; }
+      .loading-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #0f172a;
+      }
+      .loader {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(245, 158, 11, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid #f59e0b;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .brand-text { font-family: 'Oswald', sans-serif; margin-top: 24px; color: white; letter-spacing: 4px; font-size: 32px; font-weight: bold; text-transform: uppercase; }
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 10px; }
     </style>
 
     <script type="importmap">
@@ -68,7 +54,6 @@
     "react": "https://esm.sh/react@18.2.0",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "@google/genai": "https://esm.sh/@google/genai@0.1.1",
     "lucide-react": "https://esm.sh/lucide-react@0.344.0",
     "recharts": "https://esm.sh/recharts@2.12.2",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.7",
@@ -79,10 +64,20 @@
   }
 }
 </script>
+
+    <!-- SDK Gemini Global via ESM.RUN (Injetado antes do app para garantir disponibilidade) -->
+    <script type="module">
+      import { GoogleGenAI } from "https://esm.run/@google/genai";
+      window.GoogleGenAI = GoogleGenAI;
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <!-- PONTO ÚNICO DE ENTRADA -->
+    <div id="root">
+      <div class="loading-screen">
+        <div class="loader"></div>
+        <h2 class="brand-text">HELO<span style="color: #f59e0b;">NEX</span></h2>
+      </div>
+    </div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

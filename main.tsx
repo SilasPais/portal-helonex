@@ -1,1 +1,1 @@
-// Arquivo movido para index.tsx para manter o padrão de entrada do projeto.
+// Arquivo desativado em favor do index.tsx

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Section, Language } from '../types';
-import { Menu, X, Truck, GraduationCap, ShieldCheck, Cpu, Zap, User, LogOut, LayoutDashboard, Users, Sun } from 'lucide-react';
+import { Menu, X, Truck, GraduationCap, ShieldCheck, Cpu, Zap, User, LogOut, LayoutDashboard, Shield, Sun } from 'lucide-react';
 
 interface HeaderProps {
   activeSection: Section;
@@ -18,31 +18,26 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
   const t = {
     pt: {
       home: 'Início',
-      services: 'Serviços',
+      services: 'Hub Inteligência',
       academy: 'Academia',
-      community: 'Comunidade',
       mentor: 'Mentor IA',
-      dashboard: 'Painel',
-      login: 'Entrar',
+      login: 'Acesso Restrito',
       subscribe: 'ASSINAR PRO'
     },
     es: {
       home: 'Inicio',
       services: 'Servicios',
       academy: 'Academia',
-      community: 'Comunidad',
       mentor: 'Mentor IA',
-      dashboard: 'Panel',
       login: 'Ingresar',
       subscribe: 'SUSCRIBIRME'
     }
   };
 
   const navItems = [
-    { id: Section.HOME, label: t[language].home, icon: <ShieldCheck size={16} /> },
-    { id: Section.SERVICES, label: t[language].services, icon: <Truck size={16} /> },
+    { id: Section.HOME, label: t[language].home, icon: <Sun size={16} /> },
+    { id: Section.SERVICES, label: t[language].services, icon: <Shield size={16} /> },
     { id: Section.ACADEMY, label: t[language].academy, icon: <GraduationCap size={16} /> },
-    { id: Section.NEWS_BOARD, label: t[language].community, icon: <Users size={16} /> },
     { id: Section.MENTOR, label: t[language].mentor, icon: <Cpu size={16} /> },
   ];
 
@@ -65,78 +60,68 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* LOGO HELONEX */}
           <div 
             className="flex items-center cursor-pointer group" 
             onClick={() => handleNav(Section.HOME)}
-            title="Voltar ao Início"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-hlx-gold to-orange-600 rounded-lg flex items-center justify-center mr-3 shadow-lg border border-white/10 group-hover:rotate-12 transition-transform">
-              <Sun className="text-white" size={24} />
+            <div className="w-10 h-10 bg-gradient-to-br from-hlx-gold to-orange-600 rounded-lg flex items-center justify-center mr-3 shadow-xl border border-white/10 group-hover:rotate-3 transition-transform">
+              <Shield className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="font-display font-bold text-2xl tracking-wide text-white flex items-center gap-1">
+              <h1 className="font-display font-bold text-2xl tracking-tighter text-white">
                 HELO<span className="text-hlx-gold">NEX</span>
               </h1>
-              <p className="text-[9px] text-gray-400 font-bold tracking-[0.1em] uppercase hidden sm:block">
-                INTELIGÊNCIA LOGÍSTICA & GOVTECH
+              <p className="text-[8px] text-gray-500 font-bold tracking-[0.3em] uppercase hidden sm:block">
+                Soberania em Inteligência Logística
               </p>
             </div>
           </div>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-4">
-            <nav className="flex space-x-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNav(item.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs lg:text-sm font-bold transition-all duration-300 ${
-                    activeSection === item.id
-                      ? 'bg-hlx-gold text-slate-900 shadow-lg shadow-yellow-500/20 scale-105'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {item.icon}
-                  {item.label}
-                </button>
-              ))}
+          <div className="hidden md:flex items-center space-x-2">
+            <nav className="flex space-x-1">
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNav(item.id)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      isActive
+                        ? 'bg-hlx-gold text-slate-900 shadow-lg'
+                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
             </nav>
             
-            <div className="h-6 w-px bg-white/20 mx-2"></div>
+            <div className="h-6 w-px bg-white/10 mx-2"></div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
                {isLoggedIn ? (
                  <>
                    <button
                     onClick={() => handleNav(Section.CLIENT_PANEL)}
-                    className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-white/10 transition-colors"
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-white/10 text-xs font-bold transition-colors"
                    >
-                     <LayoutDashboard size={16} />
-                     <span className="text-xs font-bold hidden lg:inline">{t[language].dashboard}</span>
+                     PAINEL
                    </button>
-                   <button
-                    onClick={handleLogoutClick}
-                    className="text-gray-400 hover:text-red-400 p-2"
-                    title="Sair"
-                   >
-                     <LogOut size={18} />
-                   </button>
+                   <button onClick={handleLogoutClick} className="text-gray-500 hover:text-red-400 p-2"><LogOut size={18} /></button>
                  </>
                ) : (
                  <>
                    <button
                     onClick={() => handleNav(Section.LOGIN)}
-                    className="px-3 py-2 text-xs font-bold text-gray-200 border border-white/20 rounded-lg hover:bg-white/10 hover:text-white transition-all flex items-center gap-2"
+                    className="px-4 py-2 text-xs font-bold text-gray-400 hover:text-white transition-all"
                   >
-                    <User size={14} />
                     {t[language].login}
                   </button>
-                  <button
+                   <button
                     onClick={() => handleNav(Section.OPPORTUNITY)}
-                    className="bg-hlx-gold hover:bg-yellow-400 text-slate-900 px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-lg shadow-yellow-500/20"
+                    className="bg-hlx-gold hover:bg-yellow-400 text-slate-900 px-5 py-2 rounded-lg font-bold text-xs shadow-lg shadow-yellow-500/20 transition-all"
                   >
-                    <Zap size={14} />
                     {t[language].subscribe}
                   </button>
                  </>
@@ -144,49 +129,12 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-4">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-300 hover:text-white p-2"
-            >
-              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          <div className="md:hidden">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-300 p-2">
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu Content */}
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-20 left-0 w-full bg-hlx-navy border-b border-white/10 shadow-xl backdrop-blur-md animate-fade-in-down z-50">
-            <nav className="flex flex-col p-4 space-y-4">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNav(item.id)}
-                  className={`flex items-center gap-3 text-sm font-bold p-3 rounded-lg transition-colors ${
-                    activeSection === item.id
-                      ? 'bg-hlx-gold text-slate-900'
-                      : 'text-gray-300 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  {item.icon}
-                  {item.label}
-                </button>
-              ))}
-              
-              <div className="pt-4 border-t border-white/10 grid grid-cols-2 gap-4">
-                 {!isLoggedIn ? (
-                   <>
-                    <button onClick={() => handleNav(Section.LOGIN)} className="p-3 bg-slate-800 rounded-lg text-white font-bold text-xs text-center border border-white/10">Entrar</button>
-                    <button onClick={() => handleNav(Section.OPPORTUNITY)} className="p-3 bg-hlx-gold rounded-lg text-slate-900 font-bold text-xs text-center shadow-lg">Assinar</button>
-                   </>
-                 ) : (
-                    <button onClick={handleLogoutClick} className="col-span-2 p-3 bg-red-500/20 text-red-400 rounded-lg font-bold text-xs text-center border border-red-500/30">Sair</button>
-                 )}
-              </div>
-            </nav>
-          </div>
-        )}
       </div>
     </header>
   );

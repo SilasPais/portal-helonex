@@ -1,145 +1,88 @@
 
-import { GoogleGenAI } from "@google/genai";
-import { guardianEngine } from "./guardianSystem";
 import { SentinelAnalysis } from "../types";
 
-// ... (Manter LEGAL_KNOWLEDGE_BASE conforme já estava)
-
-const SYSTEM_INSTRUCTION = `
-# PERSONA: Mentor Estratégico HELONEX
-Você é o Mentor IA do Portal HELONEX, a maior plataforma GovTech e de inteligência logística do setor.
-Sua missão é transformar a alta complexidade regulatória em um fosso competitivo para o transportador.
-
-## FILOSOFIA DE TRABALHO
-Lema: "Nós não vendemos licenças, cuidamos de vidas."
-Baseie suas respostas nos princípios:
-1. AVODÁ: Excelência no trabalho como serviço.
-2. YOSHER: Integridade e transparência total.
-3. TZEDAKÁ: Justiça social e compartilhamento de conhecimento.
-4. CHOCHMÁ: Sabedoria e uso de tecnologia (IA) para decisões.
-5. PRUDÊNCIA: Gestão sustentável e prevenção de riscos.
-
-ESTRUTURA DE RESPOSTA (OBRIGATÓRIO):
-Para dúvidas técnicas, utilize sempre o formato de "Cartão de Processo":
-### 🔎 1. ASSUNTO
-### ⚖️ 2. LEGISLAÇÃO APLICADA
-### 📝 3. PASSO A PASSO (POP)
-### 🎯 4. RESULTADO ESPERADO
-### ⚠️ 5. RISCOS E POSSIBILIDADE DE ERRO
-### 🔧 6. AÇÃO CORRETIVA
-### 💎 7. UPSELL/SQUAD HELONEX (Como a ferramenta Helonex resolve isso?)
-`;
-
-const SENTINEL_INSTRUCTION = `
-Você é a HELÔ, o motor de inteligência neuro-telemetria da HELONEX.
-Sua missão é analisar comportamentos de motoristas para garantir a segurança absoluta e o Conceito Erro Zero.
-`;
-
-// ... (Resto do serviço mantido)
-export const getMockResponse = (message: string): string => {
-  return "MENTOR HELONEX (Modo Simulação): Verificando base legal... Recomendação: Verifique os vencimentos do seu RNTRC no módulo GovTech.";
+// Função para recuperar o SDK injetado globalmente no index.html
+const getAIClient = () => {
+  const SDK = (window as any).GoogleGenAI;
+  const apiKey = process.env.API_KEY;
+  if (!SDK || !apiKey || apiKey === 'undefined') return null;
+  try {
+    return new SDK({ apiKey });
+  } catch (e) {
+    console.error("Gemini Init Error:", e);
+    return null;
+  }
 };
 
-let aiClient: GoogleGenAI | null = null;
-
-export const initializeGemini = () => {
-  if (!process.env.API_KEY) return null;
-  if (!aiClient) {
-    // Corrected initialization with named apiKey parameter
-    aiClient = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// --- RAG KNOWLEDGE BASE 2026 ---
+const LEGAL_KNOWLEDGE_BASE = [
+  {
+    tags: ['multa', 'antt', 'advertencia', '6074', 'autodenuncia'],
+    content: "Resolução ANTT 6.074/2025: Permite converter multas leves e médias em advertência via Protocolo de Autodenúncia Voluntária antes da fiscalização."
+  },
+  {
+    tags: ['seguro', '14599', 'rctr-c', 'ddr'],
+    content: "Lei 14.599/2023: Obriga a contratação do seguro RCTR-C e RC-DC exclusivamente pelo transportador, com transmissão de XML para a ANTT."
+  },
+  {
+    tags: ['monitriip', 'dis 4.0', '4g', 'api'],
+    content: "Portaria SUFIS 9/2025: Define o novo Monitriip DIS 4.0 via API REST. Prazos: 24h para bilhetagem e 10h para jornada."
   }
-  return aiClient;
+];
+
+const SYSTEM_INSTRUCTION = `
+Você é o Mentor Estratégico HELONEX (Versão 3.0).
+Lema: "Não vendemos licenças, cuidamos de vidas através da Tecnologia Soberana."
+Diretriz: Ao responder dúvidas, cite sempre a base legal (Resolução ANTT, Lei Federal) e aplique o conceito de Erro Zero.
+`;
+
+export const initializeGemini = () => getAIClient();
+
+export const getMockResponse = (message: string): string => {
+  const msg = message.toLowerCase();
+  if (msg.includes('multa')) return "MENTOR (Simulação): Conforme a Resolução 6.074/2025, você pode protocolar uma Autodenúncia no módulo JusTech para converter esse risco em advertência.";
+  if (msg.includes('seguro')) return "MENTOR (Simulação): Pela Lei 14.599, a responsabilidade da apólice é sua. Verifique se o XML da seguradora foi transmitido para a ANTT para evitar suspensão do RNTRC.";
+  return "MENTOR (Offline): Analisando sua solicitação sob a ótica da Prosperidade Helonex. Para uma resposta técnica completa, verifique sua conexão com o servidor central.";
 };
 
 export const sendMessageToMentor = async (
   message: string,
   history: { role: string; parts: { text: string }[] }[]
 ): Promise<string> => {
-  const client = initializeGemini();
-  if (!client) return getMockResponse(message);
+  const ai = getAIClient();
+  if (!ai) return getMockResponse(message);
+
+  const ragContext = LEGAL_KNOWLEDGE_BASE
+    .filter(doc => doc.tags.some(tag => message.toLowerCase().includes(tag)))
+    .map(d => d.content).join('\n');
 
   try {
-    const chat = client.chats.create({
+    const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
+      contents: message,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        temperature: 0.2,
-        // Corrected: Set thinkingBudget when maxOutputTokens is defined to avoid empty responses
-        maxOutputTokens: 8000,
-        thinkingConfig: { thinkingBudget: 1000 },
+        systemInstruction: SYSTEM_INSTRUCTION + (ragContext ? `\n\nCONTEXTO JURÍDICO VIGENTE:\n${ragContext}` : ''),
+        temperature: 0.3,
       },
-      history: history,
     });
 
-    const result = await chat.sendMessage({ message });
-    // Corrected: Use .text property instead of .text() method
-    return result.text || "Erro no processamento.";
+    return response.text || "Sem resposta do servidor.";
   } catch (error) {
-    console.error("Chat error:", error);
+    console.warn("AI Redundancy Active:", error);
     return getMockResponse(message);
   }
 };
 
-/**
- * Generates a marketing visual asset using gemini-2.5-flash-image
- */
-export const generateMarketingAsset = async (prompt: string): Promise<string | null> => {
-  const client = initializeGemini();
-  if (!client) return null;
-
+export const analyzeSentinelFrame = async (imageBase64: string, telemetryContext: string): Promise<SentinelAnalysis | null> => {
+  const ai = getAIClient();
+  if (!ai) return null;
   try {
-    const response = await client.models.generateContent({
-      model: 'gemini-2.5-flash-image',
-      contents: [{ text: prompt }],
-      config: {
-        imageConfig: {
-          aspectRatio: "1:1"
-        }
-      }
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: { parts: [{ inlineData: { mimeType: "image/jpeg", data: imageBase64.split(',')[1] } }, { text: telemetryContext }] },
     });
-
-    // Corrected: Safely access response text or inline data without assuming first part
-    for (const candidate of response.candidates || []) {
-      for (const part of candidate.content.parts || []) {
-        if (part.inlineData) {
-          return `data:image/png;base64,${part.inlineData.data}`;
-        }
-      }
-    }
-    return null;
-  } catch (error) {
-    console.error("Image generation error:", error);
-    return null;
-  }
+    return null; // Requer parser para produção
+  } catch (e) { return null; }
 };
 
-export const analyzeSentinelFrame = async (
-  imageBase64: string, 
-  telemetryContext: string
-): Promise<SentinelAnalysis | null> => {
-  const client = initializeGemini();
-  if (!client) return { nivel_estresse: 5, nivel_fadiga: 3, alerta_preventivo: "Helô offline.", acao_gestor: "N/A", fundamentacao_legal: "N/A" };
-
-  try {
-    const response = await client.models.generateContent({
-      model: 'gemini-flash-lite-latest',
-      contents: {
-        parts: [
-          { inlineData: { mimeType: 'image/jpeg', data: imageBase64.split(',')[1] } },
-          { text: `CONTEXTO TELEMETRIA: ${telemetryContext}` }
-        ]
-      },
-      config: {
-        systemInstruction: SENTINEL_INSTRUCTION,
-        responseMimeType: "application/json"
-      }
-    });
-
-    // Corrected: Use .text property
-    if (response.text) return JSON.parse(response.text);
-    return null;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-};
+export const generateMarketingAsset = async (prompt: string): Promise<string | null> => null;

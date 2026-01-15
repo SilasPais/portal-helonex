@@ -1,5 +1,7 @@
 {
-  "name": "Portal HELONEX",
-  "description": "Ecossistema HELONEX: A maior plataforma de Inteligência Logística, GovTech e Gestão de Frota.",
-  "requestFramePermissions": []
+  "name": "HELONEX Global",
+  "description": "Ecossistema de Inteligência Logística, Soberania Digital e Gestão de Risco. Auditoria Regulatória ANTT, SASSMAQ e JusTech.",
+  "requestFramePermissions": [
+    "camera"
+  ]
 }
