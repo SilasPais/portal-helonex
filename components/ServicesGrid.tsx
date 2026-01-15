@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { ServiceCardProps } from '../types';
 import { 
-  Bus, AlertTriangle, Map, FileCheck, ShieldAlert, Globe, Scale, 
-  Crown, Gavel, Briefcase, Activity, ArrowUpRight, Smartphone, Zap, BrainCircuit, ScanFace, Star
+  Bus, FileCheck, Crown, Gavel, ArrowUpRight, Smartphone, Zap, BrainCircuit, ScanFace, Star, Truck
 } from 'lucide-react';
 
 interface ServicesGridProps {
@@ -12,16 +11,14 @@ interface ServicesGridProps {
 
 type UniverseType = 'ECOSYSTEM' | 'CARGO' | 'PASSENGER' | 'LEGAL';
 
-const CustomTruckIcon = ({ size = 24, className = "" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M1 10V19C1 20.1046 1.89543 21 3 21H16C16.5523 21 17 20.5523 17 20V19H20C20.5523 19 21 18.5523 21 18V13.8284C21 13.298 20.7893 12.7893 20.4142 12.4142L18.5858 10.5858C18.2107 10.2107 17.702 10 17.1716 10H17V5C17 3.89543 16.1046 3 15 3H3C1.89543 3 1 3.89543 1 5V10Z" />
-    <circle cx="5.5" cy="19.5" r="2.5" />
-    <circle cx="16.5" cy="19.5" r="2.5" />
-  </svg>
-);
+interface ExtendedServiceCardProps extends Omit<ServiceCardProps, 'icon'> {
+  icon: React.ElementType;
+  universe: UniverseType;
+  isFeatured?: boolean;
+}
 
-const ServiceCard: React.FC<ServiceCardProps & { onClick: () => void; universe: UniverseType; isFeatured?: boolean }> = ({ 
-  id, title, description, icon, category, onClick, universe, isFeatured 
+const ServiceCard: React.FC<ExtendedServiceCardProps & { onClick: () => void }> = ({ 
+  id, title, description, icon: Icon, category, onClick, universe, isFeatured 
 }) => {
   
   const getTheme = () => {
@@ -47,7 +44,7 @@ const ServiceCard: React.FC<ServiceCardProps & { onClick: () => void; universe: 
 
       <div className="p-6 md:p-8 flex-grow relative z-10">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform group-hover:scale-110 ${getIconColor()}`}>
-          {icon}
+          <Icon size={24} />
         </div>
         
         <span className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block text-gray-500 group-hover:text-hlx-gold transition-colors">
@@ -76,15 +73,15 @@ const ServiceCard: React.FC<ServiceCardProps & { onClick: () => void; universe: 
 const ServicesGrid: React.FC<ServicesGridProps> = ({ onServiceSelect }) => {
   const [activeUniverse, setActiveUniverse] = useState<UniverseType>('ECOSYSTEM');
 
-  const allServices: (ServiceCardProps & { universe: UniverseType; isFeatured?: boolean })[] = [
-    { id: 'idt-tech', title: 'Tecnologia IDT', category: 'Autonomia Digital', description: 'Emita RNTRC, CIOT e Licenças de graça via Gov.br, sem intermediários ou taxas abusivas.', icon: <Smartphone size={24} />, universe: 'ECOSYSTEM', isFeatured: true },
-    { id: 'marketing-placa', title: 'Clube Marketing Placa', category: 'Economia Real', description: 'O poder da compra coletiva. Descontos em Diesel, Pneus e Seguros para membros.', icon: <Zap size={24} />, universe: 'ECOSYSTEM', isFeatured: true },
-    { id: 'mentor-ia', title: 'Mentor IA Estratégico', category: 'Consultoria 24h', description: 'Auditoria jurídica e operacional via IA treinada nas normas da ANTT e Legislação 2026.', icon: <BrainCircuit size={24} />, universe: 'ECOSYSTEM' },
-    { id: 'rntrc-tac', title: 'RNTRC Digital (TAC)', category: 'Autônomo', description: 'Registro oficial na ANTT para Pessoa Física. Habilitação imediata com soberania de dados.', icon: <CustomTruckIcon size={24} />, universe: 'CARGO', isFeatured: true },
-    { id: 'sassmaq', title: 'Auditoria SASSMAQ', category: 'Qualidade & QSMS', description: 'Consultoria e tecnologia de visão computacional para certificação de transporte químico.', icon: <ScanFace size={24} />, universe: 'CARGO', isFeatured: true },
-    { id: 'passengers-charter', title: 'Fretamento ANTT (TAF)', category: 'Turismo', description: 'Regularização para viagens interestaduais e gestão de lista de passageiros (Res. 4.777).', icon: <Bus size={24} />, universe: 'PASSENGER', isFeatured: true },
-    { id: 'insurance', title: 'Seguros Obrigatórios', category: 'Lei 14.599', description: 'Gestão de RCTR-C e averbação automática integrada ao sistema ANTT.', icon: <FileCheck size={24} />, universe: 'LEGAL', isFeatured: true },
-    { id: 'fines', title: 'Gestão de Multas (SNE)', category: 'JusTech', description: 'Monitoramento Renainf e protocolos de autodenúncia para conversão em advertência.', icon: <Gavel size={24} />, universe: 'LEGAL' }
+  const allServices: ExtendedServiceCardProps[] = [
+    { id: 'idt-tech', title: 'Tecnologia IDT', category: 'Autonomia Digital', description: 'Emita RNTRC, CIOT e Licenças de graça via Gov.br, sem intermediários ou taxas abusivas.', icon: Smartphone, universe: 'ECOSYSTEM', isFeatured: true },
+    { id: 'marketing-placa', title: 'Clube Marketing Placa', category: 'Economia Real', description: 'O poder da compra coletiva. Descontos em Diesel, Pneus e Seguros para membros.', icon: Zap, universe: 'ECOSYSTEM', isFeatured: true },
+    { id: 'mentor-ia', title: 'Mentor IA Estratégico', category: 'Consultoria 24h', description: 'Auditoria jurídica e operacional via IA treinada nas normas da ANTT e Legislação 2026.', icon: BrainCircuit, universe: 'ECOSYSTEM' },
+    { id: 'rntrc-tac', title: 'RNTRC Digital (TAC)', category: 'Autônomo', description: 'Registro oficial na ANTT para Pessoa Física. Habilitação imediata com soberania de dados.', icon: Truck, universe: 'CARGO', isFeatured: true },
+    { id: 'sassmaq', title: 'Auditoria SASSMAQ', category: 'Qualidade & QSMS', description: 'Consultoria e tecnologia de visão computacional para certificação de transporte químico.', icon: ScanFace, universe: 'CARGO', isFeatured: true },
+    { id: 'passengers-charter', title: 'Fretamento ANTT (TAF)', category: 'Turismo', description: 'Regularização para viagens interestaduais e gestão de lista de passageiros (Res. 4.777).', icon: Bus, universe: 'PASSENGER', isFeatured: true },
+    { id: 'insurance', title: 'Seguros Obrigatórios', category: 'Lei 14.599', description: 'Gestão de RCTR-C e averbação automática integrada ao sistema ANTT.', icon: FileCheck, universe: 'LEGAL', isFeatured: true },
+    { id: 'fines', title: 'Gestão de Multas (SNE)', category: 'JusTech', description: 'Monitoramento Renainf e protocolos de autodenúncia para conversão em advertência.', icon: Gavel, universe: 'LEGAL' }
   ];
 
   const displayedServices = allServices.filter(s => s.universe === activeUniverse);
@@ -100,28 +97,35 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({ onServiceSelect }) => {
         <div className="flex overflow-x-auto md:justify-center gap-4 mb-16 pb-4 custom-scrollbar px-2">
           {[
             { id: 'ECOSYSTEM', label: 'Mundo Assinante', icon: Crown },
-            { id: 'CARGO', label: 'Carga & Logística', icon: CustomTruckIcon },
+            { id: 'CARGO', label: 'Carga & Logística', icon: Truck },
             { id: 'PASSENGER', label: 'Passageiros', icon: Bus },
             { id: 'LEGAL', label: 'Jurídico & Fiscal', icon: Gavel },
-          ].map(tab => (
-            <button 
-              key={tab.id}
-              onClick={() => setActiveUniverse(tab.id as UniverseType)}
-              className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-sm transition-all border-2 flex-shrink-0 whitespace-nowrap
-                ${activeUniverse === tab.id 
-                  ? 'bg-slate-800 border-hlx-gold text-white shadow-[0_0_30px_rgba(245,158,11,0.15)] scale-105' 
-                  : 'bg-slate-900 border-white/5 text-gray-500 hover:border-white/20 hover:bg-slate-800'}
-              `}
-            >
-              {React.createElement(tab.icon as any, { size: 20, className: activeUniverse === tab.id ? 'text-hlx-gold' : 'text-gray-500' })}
-              {tab.label}
-            </button>
-          ))}
+          ].map(tab => {
+            const TabIcon = tab.icon;
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveUniverse(tab.id as UniverseType)}
+                className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-sm transition-all border-2 flex-shrink-0 whitespace-nowrap
+                  ${activeUniverse === tab.id 
+                    ? 'bg-slate-800 border-hlx-gold text-white shadow-[0_0_30px_rgba(245,158,11,0.15)] scale-105' 
+                    : 'bg-slate-900 border-white/5 text-gray-500 hover:border-white/20 hover:bg-slate-800'}
+                `}
+              >
+                <TabIcon size={20} className={activeUniverse === tab.id ? 'text-hlx-gold' : 'text-gray-500'} />
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 animate-fade-in-up">
-          {displayedServices.map((service, idx) => (
-            <ServiceCard key={idx} {...service} onClick={() => onServiceSelect(service.id)} />
+          {displayedServices.map((service) => (
+            <ServiceCard 
+              key={service.id} 
+              {...service} 
+              onClick={() => onServiceSelect(service.id)} 
+            />
           ))}
         </div>
       </div>

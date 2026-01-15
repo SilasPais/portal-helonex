@@ -1,48 +1,29 @@
 
+import { GoogleGenAI, Type } from "@google/genai";
 import { SentinelAnalysis } from "../types";
 
-// Função para recuperar o SDK injetado globalmente no index.html
+// Função resiliente de inicialização
 const getAIClient = () => {
-  const SDK = (window as any).GoogleGenAI;
   const apiKey = process.env.API_KEY;
-  if (!SDK || !apiKey || apiKey === 'undefined') return null;
+  if (!apiKey || apiKey === 'undefined' || apiKey === '') return null;
   try {
-    return new SDK({ apiKey });
+    return new GoogleGenAI({ apiKey });
   } catch (e) {
-    console.error("Gemini Init Error:", e);
+    console.warn("AI Engine Init Warning:", e);
     return null;
   }
 };
 
-// --- RAG KNOWLEDGE BASE 2026 ---
-const LEGAL_KNOWLEDGE_BASE = [
-  {
-    tags: ['multa', 'antt', 'advertencia', '6074', 'autodenuncia'],
-    content: "Resolução ANTT 6.074/2025: Permite converter multas leves e médias em advertência via Protocolo de Autodenúncia Voluntária antes da fiscalização."
-  },
-  {
-    tags: ['seguro', '14599', 'rctr-c', 'ddr'],
-    content: "Lei 14.599/2023: Obriga a contratação do seguro RCTR-C e RC-DC exclusivamente pelo transportador, com transmissão de XML para a ANTT."
-  },
-  {
-    tags: ['monitriip', 'dis 4.0', '4g', 'api'],
-    content: "Portaria SUFIS 9/2025: Define o novo Monitriip DIS 4.0 via API REST. Prazos: 24h para bilhetagem e 10h para jornada."
-  }
-];
-
 const SYSTEM_INSTRUCTION = `
-Você é o Mentor Estratégico HELONEX (Versão 3.0).
+Você é a Helô, Inteligência Artificial soberana do PORTAL ROTA 66 BRASIL.
 Lema: "Não vendemos licenças, cuidamos de vidas através da Tecnologia Soberana."
-Diretriz: Ao responder dúvidas, cite sempre a base legal (Resolução ANTT, Lei Federal) e aplique o conceito de Erro Zero.
+Persona Técnica, Institucional e fundamentada na base legal ANTT.
 `;
 
 export const initializeGemini = () => getAIClient();
 
 export const getMockResponse = (message: string): string => {
-  const msg = message.toLowerCase();
-  if (msg.includes('multa')) return "MENTOR (Simulação): Conforme a Resolução 6.074/2025, você pode protocolar uma Autodenúncia no módulo JusTech para converter esse risco em advertência.";
-  if (msg.includes('seguro')) return "MENTOR (Simulação): Pela Lei 14.599, a responsabilidade da apólice é sua. Verifique se o XML da seguradora foi transmitido para a ANTT para evitar suspensão do RNTRC.";
-  return "MENTOR (Offline): Analisando sua solicitação sob a ótica da Prosperidade Helonex. Para uma resposta técnica completa, verifique sua conexão com o servidor central.";
+  return "MODO DE SEGURANÇA: O portal está carregado. Para ativar a Inteligência Artificial Helô, verifique se a sua chave de API está configurada corretamente nas variáveis de ambiente.";
 };
 
 export const sendMessageToMentor = async (
@@ -52,25 +33,40 @@ export const sendMessageToMentor = async (
   const ai = getAIClient();
   if (!ai) return getMockResponse(message);
 
-  const ragContext = LEGAL_KNOWLEDGE_BASE
-    .filter(doc => doc.tags.some(tag => message.toLowerCase().includes(tag)))
-    .map(d => d.content).join('\n');
-
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: message,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION + (ragContext ? `\n\nCONTEXTO JURÍDICO VIGENTE:\n${ragContext}` : ''),
-        temperature: 0.3,
+        systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 0.2,
       },
     });
 
-    return response.text || "Sem resposta do servidor.";
+    return response.text || "Sem resposta do motor.";
   } catch (error) {
-    console.warn("AI Redundancy Active:", error);
+    console.error("AI Error:", error);
     return getMockResponse(message);
   }
+};
+
+export const generateMarketingAsset = async (prompt: string): Promise<string | null> => {
+  const ai = getAIClient();
+  if (!ai) return null;
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: [{ text: prompt }],
+      config: {
+        imageConfig: { aspectRatio: "1:1" }
+      }
+    });
+    
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData) return `data:image/png;base64,${part.inlineData.data}`;
+    }
+    return null;
+  } catch (e) { return null; }
 };
 
 export const analyzeSentinelFrame = async (imageBase64: string, telemetryContext: string): Promise<SentinelAnalysis | null> => {
@@ -79,10 +75,27 @@ export const analyzeSentinelFrame = async (imageBase64: string, telemetryContext
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: { parts: [{ inlineData: { mimeType: "image/jpeg", data: imageBase64.split(',')[1] } }, { text: telemetryContext }] },
+      contents: { 
+        parts: [
+          { inlineData: { mimeType: "image/jpeg", data: imageBase64.split(',')[1] } }, 
+          { text: `Analise: ${telemetryContext}. Retorne JSON com nivel_estresse, nivel_fadiga, alerta_preventivo, acao_gestor, fundamentacao_legal.` }
+        ] 
+      },
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            nivel_estresse: { type: Type.NUMBER },
+            nivel_fadiga: { type: Type.NUMBER },
+            alerta_preventivo: { type: Type.STRING },
+            acao_gestor: { type: Type.STRING },
+            fundamentacao_legal: { type: Type.STRING },
+          },
+          required: ["nivel_estresse", "nivel_fadiga", "alerta_preventivo", "acao_gestor", "fundamentacao_legal"]
+        }
+      }
     });
-    return null; // Requer parser para produção
+    return JSON.parse(response.text || "null"); 
   } catch (e) { return null; }
 };
-
-export const generateMarketingAsset = async (prompt: string): Promise<string | null> => null;

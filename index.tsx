@@ -6,29 +6,22 @@ import App from './App';
 const container = document.getElementById('root');
 
 if (container) {
-  const startApp = () => {
-    const root = createRoot(container);
+  const root = createRoot(container);
+  try {
     root.render(
       <React.StrictMode>
         <App />
       </React.StrictMode>
     );
-  };
-
-  // Garante que o SDK Global do Gemini esteja disponível
-  if ((window as any).GoogleGenAI) {
-    startApp();
-  } else {
-    // Polling rápido para evitar delay visual
-    let attempts = 0;
-    const interval = setInterval(() => {
-      attempts++;
-      if ((window as any).GoogleGenAI || attempts > 20) {
-        clearInterval(interval);
-        startApp();
-      }
-    }, 100);
+  } catch (error) {
+    console.error("React Render Error:", error);
+    // Fallback UI em caso de erro catastrófico no render
+    container.innerHTML = `<div style="padding: 20px; color: white; background: #0f172a; font-family: sans-serif;">
+      <h2>Erro ao carregar o portal</h2>
+      <p>Houve um problema na renderização dos componentes. Por favor, tente recarregar a página.</p>
+      <button onclick="window.location.reload()" style="padding: 10px; background: #f59e0b; border: none; border-radius: 5px; cursor: pointer;">Recarregar Portal</button>
+    </div>`;
   }
 } else {
-  console.error("Elemento raiz '#root' não encontrado.");
+  console.error("Critical: Root element not found.");
 }

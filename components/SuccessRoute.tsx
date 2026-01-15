@@ -1,40 +1,45 @@
+
 import React, { useState } from 'react';
 import { 
   Trophy, MapPin, Truck, Star, Award, ChevronRight, 
   TrendingUp, Zap, Lock, CheckCircle, Share2, FileText, 
-  Download, QrCode, ShieldCheck, User
+  Download, QrCode, ShieldCheck
 } from 'lucide-react';
 
-// --- SISTEMA DE NÍVEIS E XP (KM RODADOS) ---
 interface Level {
   id: number;
   name: string;
   minKm: number;
-  icon: React.ReactNode;
+  iconType: 'truck' | 'map' | 'award' | 'globe' | 'trophy';
   benefit: string;
 }
 
 const LEVELS: Level[] = [
-  { id: 1, name: "Motorista de Pátio", minKm: 0, icon: <Truck size={18} />, benefit: "Acesso ao Painel Básico" },
-  { id: 2, name: "Rodagem Nacional", minKm: 1000, icon: <MapPin size={18} />, benefit: "Desconto em Certificados Digitais" },
-  { id: 3, name: "Capitão de Frota", minKm: 5000, icon: <Award size={18} />, benefit: "Mentoria IA Prioritária" },
-  { id: 4, name: "Rei da Fronteira", minKm: 12000, icon: <GlobeIcon />, benefit: "Acesso VIP a Cursos Internacionais" },
-  { id: 5, name: "Lenda da Estrada", minKm: 25000, icon: <Trophy size={18} />, benefit: "Consultoria Jurídica Mensal Grátis" }
+  { id: 1, name: "Motorista de Pátio", minKm: 0, iconType: 'truck', benefit: "Acesso ao Painel Básico" },
+  { id: 2, name: "Rodagem Nacional", minKm: 1000, iconType: 'map', benefit: "Desconto em Certificados Digitais" },
+  { id: 3, name: "Capitão de Frota", minKm: 5000, iconType: 'award', benefit: "Mentoria IA Prioritária" },
+  { id: 4, name: "Rei da Fronteira", minKm: 12000, iconType: 'globe', benefit: "Acesso VIP a Cursos Internacionais" },
+  { id: 5, name: "Lenda da Estrada", minKm: 25000, iconType: 'trophy', benefit: "Consultoria Jurídica Mensal Grátis" }
 ];
 
-// Ícone personalizado auxiliar
-function GlobeIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-  );
-}
+const LevelIcon = ({ type, size = 18 }: { type: string, size?: number }) => {
+  switch (type) {
+    case 'truck': return <Truck size={size} />;
+    case 'map': return <MapPin size={size} />;
+    case 'award': return <Award size={size} />;
+    case 'trophy': return <Trophy size={size} />;
+    case 'globe': return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    );
+    default: return <Truck size={size} />;
+  }
+};
 
-// --- DADOS DO ALUNO (SIMULADO) ---
 const STUDENT_DATA = {
   name: "Transportadora Silva & Filhos",
   type: "Empresa de Transporte (ETC)",
   since: "2023",
-  currentKm: 3450, // XP Atual
+  currentKm: 3450,
   completedTasks: [
     { id: 1, title: "Cadastro da Empresa (CNPJ)", xp: 500, date: "10/10/2024", category: "Administrativo" },
     { id: 2, title: "Curso RNTRC: Módulo 1", xp: 250, date: "12/10/2024", category: "Certificação" },
@@ -49,12 +54,11 @@ const STUDENT_DATA = {
   ]
 };
 
-// --- VALORES DO CERTIFICADO ---
 const CERTIFIED_VALUES = [
   { name: "AVODÁ", desc: "Excelência no Serviço", active: true },
   { name: "YOSHER", desc: "Integridade e Compliance", active: true },
   { name: "PRUDÊNCIA", desc: "Gestão de Riscos", active: true },
-  { name: "CHOCHMÁ", desc: "Inteligência Logística", active: false }, // Ainda não desbloqueado
+  { name: "CHOCHMÁ", desc: "Inteligência Logística", active: false }, 
   { name: "TZEDAKÁ", desc: "Responsabilidade Social", active: false }
 ];
 
@@ -65,7 +69,6 @@ interface SuccessRouteProps {
 const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Calcular Nível Atual
   const currentLevelIndex = LEVELS.findIndex((lvl, idx) => {
     const nextLvl = LEVELS[idx + 1];
     return STUDENT_DATA.currentKm >= lvl.minKm && (!nextLvl || STUDENT_DATA.currentKm < nextLvl.minKm);
@@ -73,15 +76,12 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
   const currentLevel = LEVELS[currentLevelIndex];
   const nextLevel = LEVELS[currentLevelIndex + 1];
 
-  // Calcular Progresso da Barra
   const levelFloor = currentLevel.minKm;
   const levelCeiling = nextLevel ? nextLevel.minKm : currentLevel.minKm * 1.5;
   const progressPercent = Math.min(100, Math.max(0, ((STUDENT_DATA.currentKm - levelFloor) / (levelCeiling - levelFloor)) * 100));
 
   return (
     <div className="bg-slate-900 min-h-full rounded-2xl border border-white/5 overflow-hidden flex flex-col animate-fade-in-up relative">
-      
-      {/* HEADER: O PAINEL DO CARRO */}
       <div className="bg-gradient-to-r from-slate-950 to-slate-900 p-8 border-b border-white/10 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-5">
            <Trophy size={150} />
@@ -105,7 +105,7 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-hlx-gold text-slate-900 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider flex items-center gap-1">
-                {currentLevel.icon} Nível {currentLevel.id}
+                <LevelIcon type={currentLevel.iconType} size={14} /> Nível {currentLevel.id}
               </div>
               <span className="text-gray-400 text-sm">|</span>
               <span className="text-hlx-blue font-bold text-sm">Próximo: {nextLevel ? nextLevel.name : 'Máximo Atingido'}</span>
@@ -139,19 +139,12 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* COLUNA ESQUERDA: A ESTRADA (TIMELINE) */}
           <div className="lg:col-span-2 relative">
              <h3 className="text-white font-bold text-xl mb-8 flex items-center gap-2">
                <MapPin className="text-hlx-orange" /> Sua Jornada na HELONEX
              </h3>
-
-             {/* Linha da Estrada */}
              <div className="absolute left-4 top-16 bottom-0 w-1 bg-slate-800 rounded-full"></div>
-
              <div className="space-y-8 relative z-10">
-               
-               {/* Próximas Missões (Locked/Future) */}
                {STUDENT_DATA.nextTasks.map((task) => (
                  <div key={task.id} className="flex gap-6 opacity-60 hover:opacity-100 transition-opacity group cursor-pointer">
                     <div className="w-9 h-9 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center flex-shrink-0 z-10 shadow-lg group-hover:border-hlx-gold group-hover:bg-hlx-gold group-hover:text-slate-900 transition-all">
@@ -162,15 +155,9 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                          <h4 className="text-white font-bold">{task.title}</h4>
                          <span className="text-xs font-bold text-hlx-gold bg-hlx-gold/10 px-2 py-1 rounded">+{task.xp} Km</span>
                        </div>
-                       <p className="text-sm text-gray-500 mt-1">
-                         {task.type === 'course' ? 'Assista às aulas para desbloquear.' : 
-                          task.type === 'action' ? 'Execute no sistema para pontuar.' : 'Teste seu conhecimento.'}
-                       </p>
                     </div>
                  </div>
                ))}
-
-               {/* O Carro (Posição Atual) */}
                <div className="flex gap-6 items-center py-4">
                   <div className="w-12 h-12 rounded-full bg-hlx-gold shadow-[0_0_20px_rgba(245,158,11,0.5)] flex items-center justify-center flex-shrink-0 z-20 -ml-1.5 animate-pulse border-4 border-slate-900">
                      <Truck size={20} className="text-slate-900 fill-slate-900" />
@@ -179,8 +166,6 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                     VOCÊ ESTÁ AQUI ({STUDENT_DATA.currentKm} Km)
                   </div>
                </div>
-
-               {/* Histórico (Completed) */}
                {[...STUDENT_DATA.completedTasks].reverse().map((task) => (
                  <div key={task.id} className="flex gap-6">
                     <div className="w-9 h-9 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 z-10 shadow-lg border-4 border-slate-900">
@@ -191,96 +176,26 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                          <h4 className="text-gray-300 font-bold line-through decoration-green-500/50">{task.title}</h4>
                          <span className="text-xs text-green-500 font-mono">Concluído em {task.date}</span>
                        </div>
-                       <div className="flex items-center gap-1 mt-1">
-                          <Zap size={12} className="text-yellow-500" />
-                          <span className="text-xs text-yellow-500">Ganhou {task.xp} Km</span>
-                       </div>
                     </div>
                  </div>
                ))}
-
              </div>
           </div>
 
-          {/* COLUNA DIREITA: CONQUISTAS & RANKING */}
           <div className="space-y-6">
-            
-            {/* Benefício Atual */}
             <div className="bg-gradient-to-br from-hlx-blue/20 to-slate-900 p-6 rounded-xl border border-hlx-blue/30">
                <h4 className="text-white font-bold mb-2 flex items-center gap-2">
                  <Star className="text-yellow-400 fill-yellow-400" size={16} /> Benefício Ativo
                </h4>
                <p className="text-hlx-blue font-bold text-lg">{currentLevel.benefit}</p>
-               <p className="text-gray-400 text-xs mt-2">
-                 Ao atingir o próximo nível ({nextLevel?.name}), você desbloqueia: <br/>
-                 <span className="text-white font-bold">{nextLevel?.benefit}</span>
-               </p>
             </div>
-
-            {/* Galeria de Medalhas */}
-            <div className="bg-slate-800 rounded-xl border border-white/5 p-6">
-              <h4 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Sua Coleção de Conquistas</h4>
-              <div className="grid grid-cols-3 gap-4">
-                 <div className="flex flex-col items-center text-center group cursor-pointer">
-                    <div className="w-14 h-14 bg-slate-900 rounded-full border border-hlx-gold flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 transition-transform">
-                       <Award size={24} className="text-hlx-gold" />
-                    </div>
-                    <span className="text-[10px] text-gray-300 font-bold">Pioneiro</span>
-                 </div>
-                 
-                 <div className="flex flex-col items-center text-center group cursor-pointer grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
-                    <div className="w-14 h-14 bg-slate-900 rounded-full border border-purple-500 flex items-center justify-center mb-2 shadow-lg">
-                       <GlobeIcon />
-                    </div>
-                    <span className="text-[10px] text-gray-300 font-bold">Internacional</span>
-                 </div>
-
-                 <div className="flex flex-col items-center text-center group cursor-pointer grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
-                    <div className="w-14 h-14 bg-slate-900 rounded-full border border-red-500 flex items-center justify-center mb-2 shadow-lg">
-                       <Zap size={24} className="text-red-500" />
-                    </div>
-                    <span className="text-[10px] text-gray-300 font-bold">MOPP Master</span>
-                 </div>
-                 
-                 {/* Slots Vazios */}
-                 {[1,2,3].map(i => (
-                   <div key={i} className="flex flex-col items-center text-center">
-                      <div className="w-14 h-14 bg-slate-900/50 rounded-full border border-white/5 flex items-center justify-center mb-2 border-dashed">
-                         <Lock size={16} className="text-gray-700" />
-                      </div>
-                   </div>
-                 ))}
-              </div>
-            </div>
-
-            {/* Daily Challenge */}
-            <div className="bg-slate-800 rounded-xl border border-white/5 p-6 relative overflow-hidden group hover:border-green-500/30 transition-colors cursor-pointer">
-              <div className="absolute top-0 right-0 p-2 bg-green-500 text-slate-900 text-[10px] font-bold rounded-bl-lg">
-                HOJE
-              </div>
-              <h4 className="text-white font-bold mb-1">Desafio Diário</h4>
-              <p className="text-gray-400 text-xs mb-3">Complete seu perfil de motorista.</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1 text-green-400 font-bold text-sm">
-                  <TrendingUp size={16} /> +150 Km
-                </div>
-                <button className="text-xs bg-slate-700 hover:bg-green-600 hover:text-white px-3 py-1.5 rounded transition-colors text-white">
-                  Iniciar
-                </button>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
 
-      {/* MODAL: PASSAPORTE PROFISSIONAL (CV CERTIFICADO) */}
       {showShareModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in-up">
           <div className="bg-slate-50 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden text-slate-900 flex flex-col max-h-[90vh]">
-            
-            {/* Header do Certificado */}
             <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-6 flex justify-between items-start text-white">
               <div>
                 <div className="flex items-center gap-3 mb-2">
@@ -297,11 +212,7 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                 <Lock size={20} /> Fechar
               </button>
             </div>
-
-            {/* Conteúdo do Certificado (Scrollable) */}
             <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-              
-              {/* Info Principal */}
               <div className="flex flex-col md:flex-row justify-between items-start border-b border-gray-200 pb-6 mb-6">
                 <div>
                   <h3 className="text-2xl font-bold text-slate-900">{STUDENT_DATA.name}</h3>
@@ -309,9 +220,6 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                   <div className="flex gap-2 mt-3">
                     <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 flex items-center gap-1">
                       <ShieldCheck size={12} /> Cadastro Verificado
-                    </span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200 flex items-center gap-1">
-                      <Star size={12} /> Nível: {currentLevel.name}
                     </span>
                   </div>
                 </div>
@@ -322,8 +230,6 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                   <p className="text-[10px] text-gray-400 mt-1">Validar em: helonex.global/validar</p>
                 </div>
               </div>
-
-              {/* Seção 1: Competências Técnicas (Hard Skills) */}
               <div className="mb-8">
                 <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
                   <FileText size={18} className="text-hlx-blue" /> Competências Técnicas Comprovadas
@@ -343,36 +249,7 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                   ))}
                 </div>
               </div>
-
-              {/* Seção 2: Selo de Cultura e Valores (Soft Skills) */}
-              <div className="mb-6">
-                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <Award size={18} className="text-hlx-gold" /> Selo de Cultura & Valores
-                </h4>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-                  {CERTIFIED_VALUES.map((val) => (
-                    <div 
-                      key={val.name} 
-                      className={`p-3 rounded-lg border text-center ${
-                        val.active 
-                          ? 'bg-hlx-gold/10 border-hlx-gold text-slate-900' 
-                          : 'bg-gray-50 border-gray-200 text-gray-400 grayscale'
-                      }`}
-                    >
-                      {val.active && <Star size={14} className="mx-auto mb-1 text-hlx-orange fill-hlx-orange" />}
-                      <p className="font-bold text-xs">{val.name}</p>
-                      <p className="text-[9px] leading-tight mt-1">{val.desc}</p>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[10px] text-gray-500 mt-3 italic">
-                  * Este selo atesta que o profissional opera sob o código de ética do Ecossistema HELONEX.
-                </p>
-              </div>
-
             </div>
-
-            {/* Footer Actions */}
             <div className="bg-gray-50 p-6 border-t border-gray-200 flex flex-col md:flex-row gap-4">
               <button className="flex-1 py-3 bg-hlx-blue hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors flex items-center justify-center gap-2">
                 <Share2 size={18} /> Copiar Link do Perfil
@@ -381,11 +258,9 @@ const SuccessRoute: React.FC<SuccessRouteProps> = ({ onBack }) => {
                 <Download size={18} /> Baixar PDF Oficial
               </button>
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   );
 };

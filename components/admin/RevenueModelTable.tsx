@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { CheckCircle, PlusCircle, DollarSign, Zap, Lock, Truck, GraduationCap, Gavel, Radio, ShoppingBag, Trophy } from 'lucide-react';
+import { CheckCircle, PlusCircle, DollarSign, Zap, Lock, Truck, GraduationCap, Gavel, Radio, ShoppingBag } from 'lucide-react';
 
 interface RevenueStream {
   category: string;
-  icon: React.ReactNode;
+  categoryType: 'GOV' | 'EDU' | 'JUS' | 'GES' | 'MKT';
   items: {
     name: string;
     type: 'SUBSCRIPTION' | 'EXTRA';
@@ -16,7 +16,7 @@ interface RevenueStream {
 const REVENUE_MATRIX: RevenueStream[] = [
   {
     category: "GovTech (Regulatório)",
-    icon: <Truck className="text-green-400" />,
+    categoryType: 'GOV',
     items: [
       { 
         name: "Monitoramento de Vencimentos", 
@@ -50,7 +50,7 @@ const REVENUE_MATRIX: RevenueStream[] = [
   },
   {
     category: "EduTech (Academia)",
-    icon: <GraduationCap className="text-blue-400" />,
+    categoryType: 'EDU',
     items: [
       { 
         name: "Trilhas de Gestão & Mindset", 
@@ -79,7 +79,7 @@ const REVENUE_MATRIX: RevenueStream[] = [
   },
   {
     category: "JusTech (Jurídico)",
-    icon: <Gavel className="text-red-400" />,
+    categoryType: 'JUS',
     items: [
       { 
         name: "Radar de Multas (Monitoramento)", 
@@ -107,7 +107,7 @@ const REVENUE_MATRIX: RevenueStream[] = [
   },
   {
     category: "GesTech (Frota & Hardware)",
-    icon: <Radio className="text-purple-400" />,
+    categoryType: 'GES',
     items: [
       { 
         name: "Painel de Gestão Básica", 
@@ -142,7 +142,7 @@ const REVENUE_MATRIX: RevenueStream[] = [
   },
   {
     category: "Marketplace (Comissões)",
-    icon: <ShoppingBag className="text-hlx-gold" />,
+    categoryType: 'MKT',
     items: [
       { 
         name: "Clube de Descontos", 
@@ -164,6 +164,17 @@ const REVENUE_MATRIX: RevenueStream[] = [
     ]
   }
 ];
+
+const CategoryIcon = ({ type }: { type: string }) => {
+  switch (type) {
+    case 'GOV': return <Truck className="text-green-400" />;
+    case 'EDU': return <GraduationCap className="text-blue-400" />;
+    case 'JUS': return <Gavel className="text-red-400" />;
+    case 'GES': return <Radio className="text-purple-400" />;
+    case 'MKT': return <ShoppingBag className="text-hlx-gold" />;
+    default: return <DollarSign />;
+  }
+};
 
 const RevenueModelTable: React.FC = () => {
   return (
@@ -190,7 +201,7 @@ const RevenueModelTable: React.FC = () => {
           <div key={idx} className="bg-slate-800 rounded-xl border border-white/5 overflow-hidden shadow-lg">
             <div className="bg-slate-950 p-4 border-b border-white/10 flex items-center gap-3">
               <div className="p-2 bg-slate-900 rounded-lg border border-white/5">
-                {stream.icon}
+                <CategoryIcon type={stream.categoryType} />
               </div>
               <h3 className="text-white font-bold text-lg">{stream.category}</h3>
             </div>

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Section, Language } from '../types';
-import { Menu, X, Truck, GraduationCap, ShieldCheck, Cpu, Zap, User, LogOut, LayoutDashboard, Shield, Sun } from 'lucide-react';
+import { Menu, X, GraduationCap, Cpu, LogOut, Shield, Sun } from 'lucide-react';
 
 interface HeaderProps {
   activeSection: Section;
@@ -34,13 +34,6 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
     }
   };
 
-  const navItems = [
-    { id: Section.HOME, label: t[language].home, icon: <Sun size={16} /> },
-    { id: Section.SERVICES, label: t[language].services, icon: <Shield size={16} /> },
-    { id: Section.ACADEMY, label: t[language].academy, icon: <GraduationCap size={16} /> },
-    { id: Section.MENTOR, label: t[language].mentor, icon: <Cpu size={16} /> },
-  ];
-
   const handleNav = (section: Section) => {
     onNavigate(section);
     setIsMenuOpen(false);
@@ -51,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
     setIsMenuOpen(false);
   };
 
-  if (activeSection === Section.LOGIN || activeSection === Section.ADMIN_PANEL || activeSection === Section.REGISTER) {
+  if ([Section.LOGIN, Section.ADMIN_PANEL, Section.REGISTER, Section.COURSE_PLAYER].includes(activeSection)) {
      return null;
   }
 
@@ -68,10 +61,10 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
               <Shield className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="font-display font-bold text-2xl tracking-tighter text-white">
-                HELO<span className="text-hlx-gold">NEX</span>
+              <h1 className="font-display font-bold text-2xl tracking-tighter text-white leading-none">
+                ROTA <span className="text-hlx-gold">66</span> BRASIL
               </h1>
-              <p className="text-[8px] text-gray-500 font-bold tracking-[0.3em] uppercase hidden sm:block">
+              <p className="text-[8px] text-gray-500 font-bold tracking-[0.3em] uppercase hidden sm:block mt-1">
                 Soberania em Inteligência Logística
               </p>
             </div>
@@ -79,22 +72,38 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
 
           <div className="hidden md:flex items-center space-x-2">
             <nav className="flex space-x-1">
-              {navItems.map((item) => {
-                const isActive = activeSection === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNav(item.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                      isActive
-                        ? 'bg-hlx-gold text-slate-900 shadow-lg'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
+              <button
+                onClick={() => handleNav(Section.HOME)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  activeSection === Section.HOME ? 'bg-hlx-gold text-slate-900 shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Sun size={14} /> {t[language].home}
+              </button>
+              <button
+                onClick={() => handleNav(Section.SERVICES)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  activeSection === Section.SERVICES ? 'bg-hlx-gold text-slate-900 shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Shield size={14} /> {t[language].services}
+              </button>
+              <button
+                onClick={() => handleNav(Section.ACADEMY)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  activeSection === Section.ACADEMY ? 'bg-hlx-gold text-slate-900 shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <GraduationCap size={14} /> {t[language].academy}
+              </button>
+              <button
+                onClick={() => handleNav(Section.MENTOR)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  activeSection === Section.MENTOR ? 'bg-hlx-gold text-slate-900 shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Cpu size={14} /> {t[language].mentor}
+              </button>
             </nav>
             
             <div className="h-6 w-px bg-white/10 mx-2"></div>
@@ -136,6 +145,34 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onNavigate, isLoggedIn =
           </div>
         </div>
       </div>
+      
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-slate-900 border-b border-white/10 p-4 space-y-2">
+          <button onClick={() => handleNav(Section.HOME)} className="flex items-center gap-3 w-full p-3 text-sm font-bold text-gray-300 hover:bg-white/5 rounded-lg">
+            <Sun size={18} /> {t[language].home}
+          </button>
+          <button onClick={() => handleNav(Section.SERVICES)} className="flex items-center gap-3 w-full p-3 text-sm font-bold text-gray-300 hover:bg-white/5 rounded-lg">
+            <Shield size={18} /> {t[language].services}
+          </button>
+          <button onClick={() => handleNav(Section.ACADEMY)} className="flex items-center gap-3 w-full p-3 text-sm font-bold text-gray-300 hover:bg-white/5 rounded-lg">
+            <GraduationCap size={18} /> {t[language].academy}
+          </button>
+          <button onClick={() => handleNav(Section.MENTOR)} className="flex items-center gap-3 w-full p-3 text-sm font-bold text-gray-300 hover:bg-white/5 rounded-lg">
+            <Cpu size={18} /> {t[language].mentor}
+          </button>
+          <div className="pt-4 border-t border-white/5 space-y-2">
+            {!isLoggedIn ? (
+              <>
+                <button onClick={() => handleNav(Section.LOGIN)} className="w-full p-3 text-sm font-bold text-gray-300">Login</button>
+                <button onClick={() => handleNav(Section.OPPORTUNITY)} className="w-full p-3 text-sm font-bold bg-hlx-gold text-slate-900 rounded-lg">Assinar</button>
+              </>
+            ) : (
+              <button onClick={() => handleNav(Section.CLIENT_PANEL)} className="w-full p-3 text-sm font-bold bg-slate-800 text-white rounded-lg">Painel do Assinante</button>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };
