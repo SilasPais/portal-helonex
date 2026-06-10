@@ -1,52 +1,64 @@
 
-import { MaturityLevel, Enrollment, StandardProcedure, Partner, MonitriipLog, ClientComplianceStatus, MarketplaceOffer, BSCIndicator, NonConformity, QualityMultiplier, PrivacySettings } from '../types';
+import { AetcRequest, AetcStatus, CompanyProfile, BSCIndicator, NonConformity, QualityMultiplier, Enrollment, MarketplaceOffer, SafeStop, DocumentationDoc, Vehicle, TaxDocument } from '../types';
 
-// VERSÃO DE BACKUP ESTÁVEL DE 12/01/2026
-const DB_VERSION = '1.6.0_STABLE';
-const DB_KEY = 'rota66_stable_backup';
+const DB_KEY = 'helonex_v2_soberana_stable';
 
-const MOCK_DB = {
-  version: DB_VERSION,
-  company: {
-    id: 'comp_123',
-    name: 'ROTA 66 BRASIL - UNIDADE PILOTO',
-    cnpj: '12.345.678/0001-90',
-    type: 'ETC',
-    profileSegment: 'CARGO_PROVIDER',
-    operationMode: 'TRRC',
-    iqtScore: 100,
-    maturityLevel: MaturityLevel.EXPONENCIAL,
-    activeModules: ['RNTRC', 'SASSMAQ', 'MONITRIIP', 'JUSTECH'],
-    documents: [],
-    vehicles: [],
-    drivers: [],
-    privacySettings: {
-        dataProcessing: true,
-        aiAnalysis: true,
-        cameraRecording: true,
-        marketing: true,
-        lastUpdated: '2026-01-12T10:00:00Z'
-    }
+const INITIAL_AETC_REQUESTS: AetcRequest[] = [
+  {
+    id: 'AETC-SP-1001',
+    clientName: 'Transportes Silva ETC',
+    plate: 'GOL-2026',
+    modalityId: 'VUC',
+    status: 'DEFERIDO',
+    createdAt: '2025-01-10T10:00:00Z',
+    updatedAt: '2025-01-15T15:00:00Z',
+    expiryDate: '2027-01-15',
+    financeStatus: 'PAID',
+    documents: [
+      { name: 'CRLV', status: 'VALIDATED' },
+      { name: 'Contrato Social', status: 'VALIDATED' }
+    ],
+    prefeituraProtocol: 'SUE-CET-889922'
   },
-  enrollments: [],
-  procedures: [],
-  partners: [],
-  monitriipLogs: [],
-  clientCompliance: [],
-  marketplace: []
-};
+  {
+    id: 'AETC-SP-2005',
+    clientName: 'João Tow Service',
+    plate: 'HLX-0001',
+    modalityId: 'GUINCHO',
+    status: 'ANALISE_TECNICA',
+    createdAt: '2026-03-05T09:00:00Z',
+    updatedAt: '2026-03-12T11:20:00Z',
+    financeStatus: 'PAID',
+    documents: [
+      { name: 'CRLV (Giroflex)', status: 'UPLOADED' },
+      { name: 'RG Proprietário', status: 'UPLOADED' }
+    ]
+  }
+];
 
 const loadDatabase = (): any => {
   try {
     const stored = localStorage.getItem(DB_KEY);
     if (!stored) {
-      localStorage.setItem(DB_KEY, JSON.stringify(MOCK_DB));
-      return MOCK_DB;
+        const initial = { 
+          company: { 
+            name: 'Helonex Demo', 
+            cnpj: '21.840.788/0001-14', 
+            type: 'ETC',
+            iqtScore: 85,
+            vehicles: [], 
+            drivers: [], 
+            activeRequests: []
+          }, 
+          aetcRequests: INITIAL_AETC_REQUESTS,
+          taxDocuments: [],
+          nonConformities: []
+        };
+        localStorage.setItem(DB_KEY, JSON.stringify(initial));
+        return initial;
     }
     return JSON.parse(stored);
-  } catch (e) {
-    return MOCK_DB;
-  }
+  } catch (e) { return { aetcRequests: INITIAL_AETC_REQUESTS }; }
 };
 
 const saveDatabase = (db: any) => {
@@ -54,71 +66,116 @@ const saveDatabase = (db: any) => {
 };
 
 export const guardianEngine = {
-  getCompanyData: () => loadDatabase().company,
+  getCompanyData: (): CompanyProfile => loadDatabase().company,
   
-  // Fix: Added missing methods for Admin and Dashboard components
-  getAllEnrollments: (): Enrollment[] => loadDatabase().enrollments || [],
-  
-  updateEnrollment: (id: string, updates: Partial<Enrollment>) => {
+  getAetcRequests: (): AetcRequest[] => {
+    return loadDatabase().aetcRequests || [];
+  },
+
+  createAetcRequest: (data: Partial<AetcRequest>) => {
     const db = loadDatabase();
-    db.enrollments = db.enrollments.map((e: Enrollment) => e.id === id ? { ...e, ...updates } : e);
+    const newReq: AetcRequest = {
+        id: `AETC-${Date.now()}`,
+        clientName: data.clientName || 'Cliente Novo',
+        plate: data.plate || 'ABC-0000',
+        modalityId: data.modalityId || 'VUC',
+        status: 'AGUARDANDO_DOCS',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        financeStatus: 'PENDING',
+        documents: (data.documents || []).map(d => ({ ...d, status: 'PENDING' })),
+        ...data
+    } as any;
+    db.aetcRequests.unshift(newReq);
+    saveDatabase(db);
+    return newReq;
+  },
+
+  updateAetcStatus: (id: string, status: AetcStatus, extra?: Partial<AetcRequest>) => {
+    const db = loadDatabase();
+    const idx = db.aetcRequests.findIndex((r: any) => r.id === id);
+    if (idx !== -1) {
+        db.aetcRequests[idx] = { ...db.aetcRequests[idx], status, updatedAt: new Date().toISOString(), ...extra };
+        saveDatabase(db);
+    }
+  },
+
+  saveCertificate: (cert: any) => {
+    const db = loadDatabase();
+    db.certificate = cert;
     saveDatabase(db);
   },
 
-  getAllProcedures: (): StandardProcedure[] => loadDatabase().procedures || [],
-  
-  saveProcedure: (proc: StandardProcedure) => {
+  getCertificate: () => loadDatabase().certificate || null,
+  getTaxDocuments: (): TaxDocument[] => loadDatabase().taxDocuments || [],
+  saveTaxDocument: (doc: TaxDocument) => {
     const db = loadDatabase();
-    const index = db.procedures.findIndex((p: any) => p.id === proc.id);
-    if (index >= 0) db.procedures[index] = proc;
-    else db.procedures.push(proc);
+    if (!db.taxDocuments) db.taxDocuments = [];
+    db.taxDocuments.unshift(doc);
     saveDatabase(db);
   },
-
-  getAllPartners: (): Partner[] => loadDatabase().partners || [],
-  
-  addPartner: (partner: Partner) => {
+  addVehicle: (v: Vehicle) => {
     const db = loadDatabase();
-    db.partners.push(partner);
+    db.company.vehicles.push(v);
     saveDatabase(db);
   },
-
-  getMonitriipAudit: (): MonitriipLog[] => loadDatabase().monitriipLogs || [],
-  
-  getClientComplianceStatus: (): ClientComplianceStatus[] => loadDatabase().clientCompliance || [],
-
-  getAllOffers: (): MarketplaceOffer[] => loadDatabase().marketplace || [],
-
-  getBSCIndicators: (): BSCIndicator[] => loadDatabase().company.bsc || [],
-
-  getNonConformities: (): NonConformity[] => loadDatabase().company.nonConformities || [],
-
-  addNonConformity: (nc: NonConformity) => {
+  getSafeStops: (): SafeStop[] => [
+    { id: 's1', x: 45, y: 55, name: 'Posto Graal Petropen', type: 'GAS_STATION', insuranceApproved: true },
+    { id: 's2', x: 60, y: 40, name: 'Ponto de Apoio Rodonaves', type: 'HUB', insuranceApproved: true }
+  ],
+  getAllEnrollments: (): Enrollment[] => [
+    { id: 'en1', studentName: 'João Silva', courseName: 'Master em Passageiros', status: 'ATIVO' },
+    { id: 'en2', studentName: 'Carlos Mendes', courseName: 'MOPP Atualização', status: 'CONCLUIDO' }
+  ],
+  getAllOffers: (): MarketplaceOffer[] => [
+    { id: 'o1', title: 'Pneu Michelin 295/80', description: 'Desconto exclusivo para membros Helonex.', publicPrice: 3200, memberPrice: 2850, category: 'Manutencao', targetRules: { isPublicAvailable: true, companyType: ['TAC', 'ETC'] } },
+    { id: 'o2', title: 'Diesel S10 Rede Graal', description: 'Cashback de 2% em toda a rede.', publicPrice: 6.20, memberPrice: 6.08, category: 'Combustivel', targetRules: { isPublicAvailable: true } }
+  ],
+  updatePrivacySettings: (s: any) => {
     const db = loadDatabase();
-    if (!db.company.nonConformities) db.company.nonConformities = [];
-    db.company.nonConformities.push(nc);
+    db.company.privacySettings = s;
     saveDatabase(db);
   },
-
-  getQualityMultipliers: (): QualityMultiplier[] => loadDatabase().company.qualityMultipliers || [],
-
-  updatePrivacySettings: (settings: PrivacySettings) => {
+  exportUserData: () => JSON.stringify(loadDatabase(), null, 2),
+  saveValuation: (v: any) => {
     const db = loadDatabase();
-    db.company.privacySettings = settings;
-    saveDatabase(db);
-  },
-
-  exportUserData: () => JSON.stringify(loadDatabase()),
-
-  saveValuation: (data: any) => {
-    const db = loadDatabase();
-    db.company.valuationDiagnostic = data;
+    db.company.valuation = v;
     saveDatabase(db);
     return true;
   },
-
-  hardReset: () => {
-    localStorage.clear();
-    location.reload();
-  }
+  checkBackupHealth: (): 'OK' | 'WARNING' | 'CRITICAL' => 'OK',
+  createBackupPayload: () => JSON.stringify(loadDatabase()),
+  restoreBackupPayload: (p: string) => {
+    try {
+      const db = JSON.parse(p);
+      saveDatabase(db);
+      return { success: true, message: 'Sistema Restaurado com Sucesso' };
+    } catch (e) {
+      return { success: false, message: 'Arquivo de Backup Inválido' };
+    }
+  },
+  getDocumentation: (c?: string): DocumentationDoc[] => {
+    const allDocs: DocumentationDoc[] = [
+      { id: 'doc1', title: 'Manual de Qualidade', subtitle: 'Padrão ISO 9001:2015', category: 'QMS', tags: ['ISO', 'Qualidade'], sections: [{ id: 's1', title: 'Introdução', content: 'Manual do sistema de gestão da qualidade integral.' }] }
+    ];
+    return c ? allDocs.filter(d => d.category === c) : allDocs;
+  },
+  getNonConformities: (): NonConformity[] => loadDatabase().nonConformities || [],
+  getQualityMultipliers: (): QualityMultiplier[] => [
+    { id: 'm1', name: 'João Silva', role: 'Motorista Elite', points: 1250, badges: ['Pé de Pluma', 'Zero Avarias'] }
+  ],
+  addNonConformity: (nc: any) => {
+    const db = loadDatabase();
+    if (!db.nonConformities) db.nonConformities = [];
+    db.nonConformities.unshift(nc);
+    saveDatabase(db);
+  },
+  getBSCIndicators: (): BSCIndicator[] => {
+      return [
+          { id: 'bsc_f1', name: 'Margem Líquida', perspective: 'Financeira', target: 15, actual: 12.5, unit: '%', trend: 'up', owner: 'Financeiro', linkedTo: [] },
+          { id: 'bsc_f2', name: 'Custo por KM', perspective: 'Financeira', target: 4.00, actual: 4.12, unit: 'R$', trend: 'down', owner: 'Operações', linkedTo: [] },
+          { id: 'bsc_p1', name: 'IQT (Qualidade ANTT)', perspective: 'Clientes', target: 90, actual: 82, unit: 'pts', trend: 'stable', owner: 'Tráfego', linkedTo: [] },
+          { id: 'bsc_p2', name: 'SASSMAQ Compliance', perspective: 'Processos Internos', target: 95, actual: 88, unit: '%', trend: 'up', owner: 'QSMS', linkedTo: [] },
+      ];
+  },
 };

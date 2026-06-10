@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff, Download, Trash2, FileText, CheckCircle, Save, AlertTriangle, X } from 'lucide-react';
 import { guardianEngine } from '../services/guardianSystem';
+// Fix: PrivacySettings is now exported from types.ts
 import { PrivacySettings } from '../types';
 
 interface PrivacyCenterProps {
@@ -21,8 +23,9 @@ const PrivacyCenter: React.FC<PrivacyCenterProps> = ({ onClose }) => {
   const handleToggle = (key: keyof PrivacySettings) => {
       if (!settings) return;
       if (key === 'dataProcessing') return; // Cannot toggle essential
-      const newSettings = { ...settings, [key]: !settings[key as any], lastUpdated: new Date().toISOString() };
+      const newSettings = { ...settings, [key]: !settings[key], lastUpdated: new Date().toISOString() };
       setSettings(newSettings);
+      // Fix: Now passing settings as required
       guardianEngine.updatePrivacySettings(newSettings);
   };
 
@@ -31,12 +34,17 @@ const PrivacyCenter: React.FC<PrivacyCenterProps> = ({ onClose }) => {
       const blob = new Blob([data], { type: 'application/json' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
+      a.style.display = 'none';
       a.href = url;
       a.download = `HELONEX_DADOS_${new Date().toISOString()}.json`;
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+
       alert("Download iniciado. Este arquivo contém todos os seus dados pessoais e de frota em formato JSON (Portabilidade LGPD).");
   };
 
@@ -126,7 +134,7 @@ const PrivacyCenter: React.FC<PrivacyCenterProps> = ({ onClose }) => {
                     {/* Toggle Item 3 */}
                     <div className="flex items-start justify-between p-4 bg-slate-800 rounded-xl border border-white/5">
                         <div>
-                            <h4 className="text-white font-bold mb-1">Gravação de Imagens (Nexus)</h4>
+                            <h4 className="text-white font-bold mb-1">Gravação de Imagens (Helonex Vision)</h4>
                             <p className="text-xs text-gray-400 max-w-md">Armazenamento em nuvem das imagens capturadas pelas câmeras de segurança conectadas.</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
@@ -169,7 +177,7 @@ const PrivacyCenter: React.FC<PrivacyCenterProps> = ({ onClose }) => {
                         <li><strong>Dados Pessoais:</strong> Nome, CPF, CNH, Endereço (para cadastro na ANTT/Gov.br).</li>
                         <li><strong>Dados de Frota:</strong> Placas, Renavam, CRLV (para licenciamento).</li>
                         <li><strong>Biometria:</strong> Facial (para prova de vida Gov.br, quando autorizado).</li>
-                        <li><strong>Imagens:</strong> Capturas de CFTV do módulo Nexus (apenas se ativado).</li>
+                        <li><strong>Imagens:</strong> Capturas de CFTV do módulo Helonex Vision (apenas se ativado).</li>
                     </ul>
 
                     <h4>3. Finalidade do Tratamento</h4>

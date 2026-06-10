@@ -1,20 +1,26 @@
 {
-  "name": "portal-helonex",
+  "name": "helonex-sistema-operacional",
+  "version": "1.5.0",
+  "description": "Ecossistema de Inteligência Logística - Soberania Operacional",
   "private": true,
-  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "tsx server.ts",
     "build": "tsc && vite build",
+    "lint": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "0.1.1",
-    "@supabase/supabase-js": "2.39.7",
+    "@google/genai": "1.3.0",
+    "@supabase/supabase-js": "^2.39.7",
+    "express": "^5.2.1",
     "lucide-react": "0.344.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "recharts": "2.12.2"
+    "motion": "^12.39.0",
+    "path-to-regexp": "^8.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^3.7.0",
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
     "@types/react": "18.2.64",
@@ -23,7 +29,7 @@
     "autoprefixer": "10.4.18",
     "postcss": "8.4.35",
     "tailwindcss": "3.4.1",
-    "typescript": "5.2.2",
+    "typescript": "^5.2.2",
     "vite": "5.1.6"
   }
 }

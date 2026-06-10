@@ -1,88 +1,80 @@
 
 import React from 'react';
-import { Hammer, Scale, Heart, Lightbulb, ShieldCheck, Award, Briefcase, Quote, Handshake, Users } from 'lucide-react';
+import { Hammer, Scale, Heart, Lightbulb, ShieldCheck, Sun } from 'lucide-react';
+
+const principles = [
+  { 
+    term: "SOBERANIA", 
+    translation: "Autonomia Operacional", 
+    description: "O usuário recupera o controle total de seus dados e decisões, sem dependência de terceiros.", 
+    icon: Sun, 
+    color: "text-white" 
+  },
+  { 
+    term: "AVODÁ", 
+    translation: "Excelência no Serviço", 
+    description: "Trabalhar não é apenas bater ponto; é servir com técnica, precisão e cuidado extremo.", 
+    icon: Hammer, 
+    color: "text-hlx-gold" 
+  },
+  { 
+    term: "YOSHER", 
+    translation: "Integridade de Dados", 
+    description: "Transparência radical. Algoritmos que não mentem e processos sem letras miúdas.", 
+    icon: Scale, 
+    color: "text-blue-400" 
+  },
+  { 
+    term: "TZEDAKÁ", 
+    translation: "Justiça Econômica", 
+    description: "Democratizar a alta tecnologia para que o pequeno transportador compita de igual para igual.", 
+    icon: Heart, 
+    color: "text-red-400" 
+  },
+  { 
+    term: "CHOCHMÁ", 
+    translation: "Inteligência Estratégica", 
+    description: "Uso de dados para antecipar problemas. Sair da reação e entrar na predição.", 
+    icon: Lightbulb, 
+    color: "text-yellow-400" 
+  },
+  { 
+    term: "PRUDÊNCIA", 
+    translation: "Gestão de Risco", 
+    description: "Vigilância ativa e compliance. Blindagem patrimonial através da conformidade.", 
+    icon: ShieldCheck, 
+    color: "text-green-400" 
+  }
+];
 
 const PhilosophySection: React.FC = () => {
-  const principles = [
-    {
-      term: "AVODÁ",
-      translation: "Trabalho & Serviço",
-      icon: <Hammer size={32} />,
-      description: "Excelência no servir. Para nós, o trabalho é um serviço sagrado. Cada processo regularizado é uma família protegida e um negócio que prospera."
-    },
-    {
-      term: "YOSHER",
-      translation: "Integridade & Retidão",
-      icon: <Scale size={32} />,
-      description: "Reputação acima do lucro. Transparência total. Sem atalhos perigosos. A confiança é a base da segurança jurídica no transporte."
-    },
-    {
-      term: "TZEDAKÁ",
-      translation: "Justiça Social",
-      icon: <Heart size={32} />,
-      description: "Equilíbrio e prosperidade. Garantimos que seu investimento em conformidade retorne como segurança patrimonial e valor de mercado."
-    },
-    {
-      term: "CHOCHMÁ",
-      translation: "Sabedoria Estratégica",
-      icon: <Lightbulb size={32} />,
-      description: "Inteligência acoplada. Usamos IA para decifrar a burocracia, transformando passivos regulatórios em vantagens competitivas reais."
-    },
-    {
-      term: "PRUDÊNCIA",
-      translation: "Gestão Erro Zero",
-      icon: <ShieldCheck size={32} />,
-      description: "Prevenção como estratégia. Nossa metodologia blinda a operação contra riscos previsíveis através de auditoria contínua."
-    }
-  ];
-
   return (
     <div className="py-24 bg-slate-950 relative overflow-hidden border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 py-2 px-6 rounded-full bg-hlx-gold/10 border border-hlx-gold/30 text-hlx-gold text-xs font-bold tracking-widest uppercase mb-6">
-             <Award size={16} /> O Código da Prosperidade
-          </div>
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-8">
-            Fundamentos do <span className="text-hlx-gold">Ecossistema HELONEX</span>
-          </h2>
-          <div className="max-w-4xl mx-auto bg-slate-900/50 border border-white/10 rounded-2xl p-8 relative backdrop-blur-sm shadow-2xl">
-             <Quote className="absolute top-6 left-6 text-hlx-gold/20" size={48} />
-             <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-serif italic relative z-10">
-               "Acreditamos que a Burocracia não é um obstáculo, mas um Campo de Batalha onde a Inteligência vence a Ineficiência. 
-               Cuidamos de vidas através da Tecnologia Soberana."
-             </p>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+        <div className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-hlx-gold/10 border border-hlx-gold/30 text-hlx-gold text-xs font-bold uppercase tracking-widest mb-6">
+           <Sun size={14} /> Diretrizes do Código-Fonte
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-16">
-          {principles.map((p, idx) => (
-            <div key={idx} className="bg-slate-900 border border-white/5 rounded-2xl p-6 hover:border-hlx-gold/30 transition-all duration-300 group hover:-translate-y-1">
-              <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center text-hlx-gold mb-4 group-hover:scale-110 transition-transform shadow-lg border border-white/5">
-                {p.icon}
+        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
+          Nossos <span className="text-hlx-gold">Valores</span>
+        </h2>
+        <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-16">
+          A tecnologia da Helonex é construída sobre alicerces éticos sólidos. Processamos a complexidade do mercado para devolver ordem, segurança e resultado.
+        </p>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {principles.map((p, idx) => {
+            const Icon = p.icon;
+            return (
+              <div key={idx} className="bg-slate-900/50 border border-white/5 rounded-2xl p-8 hover:border-hlx-gold/30 transition-all group hover:-translate-y-1 duration-300">
+                <div className="w-16 h-16 bg-slate-950 rounded-2xl flex items-center justify-center text-hlx-gold mb-6 group-hover:scale-110 transition-transform mx-auto border border-white/5 shadow-lg">
+                  <Icon size={32} />
+                </div>
+                <h3 className="text-2xl font-display font-bold text-white mb-2 uppercase tracking-tighter">{p.term}</h3>
+                <p className="text-[10px] font-mono text-hlx-blue uppercase mb-4 font-bold tracking-widest">{p.translation}</p>
+                <p className="text-gray-400 text-sm leading-relaxed">{p.description}</p>
               </div>
-              <h3 className="text-xl font-display font-bold text-white mb-1">{p.term}</h3>
-              <p className="text-[10px] font-mono text-hlx-blue uppercase tracking-widest mb-3">{p.translation}</p>
-              <p className="text-gray-400 text-xs leading-relaxed">{p.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-20 max-w-5xl mx-auto">
-           <div className="bg-gradient-to-br from-green-900/20 to-slate-900 border border-green-500/20 rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
-              <div className="relative z-10 flex flex-col items-center">
-                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-700 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/20">
-                    <Handshake size={32} className="text-white" />
-                 </div>
-                 <h3 className="text-2xl md:text-4xl font-display font-bold text-white mb-6">
-                    Compromisso com a <span className="text-green-400">Geração de Riqueza</span>
-                 </h3>
-                 <p className="text-gray-300 text-lg leading-relaxed max-w-3xl">
-                    Nosso ecossistema existe para gerar riqueza para o indivíduo, sua família e para a nação. 
-                    Promovemos a **Justiça Social** transformando transportadores informais em empresários de elite.
-                 </p>
-              </div>
-           </div>
+            );
+          })}
         </div>
       </div>
     </div>

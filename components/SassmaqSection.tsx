@@ -18,7 +18,7 @@ const SassmaqSection: React.FC = () => {
              <BrainCircuit size={16} /> Tecnologia Proprietária HELONEX
           </div>
           <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight">
-            SASSMAQ <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">NEXUS 4.0</span>
+            HELONEX <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">VISION 4.0</span>
           </h2>
           <p className="text-gray-400 max-w-3xl mx-auto text-lg md:text-xl leading-relaxed">
             A primeira plataforma de <strong>Auditoria Contínua & Invisível</strong> do Brasil. 
@@ -41,7 +41,7 @@ const SassmaqSection: React.FC = () => {
               </h3>
               <p className="text-gray-300 mb-6 leading-relaxed">
                 Não gaste milhares de reais com hardware proprietário ou consultores presenciais. 
-                O Nexus conecta-se ao que você já tem.
+                O Helonex Vision conecta-se ao que você já tem.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3 text-sm text-gray-400">
@@ -140,10 +140,10 @@ const SassmaqSection: React.FC = () => {
 
                 {/* Terminal Overlay */}
                 <div className="absolute top-4 left-4 font-mono text-[10px] text-green-400 bg-black/60 p-2 rounded backdrop-blur-sm border border-green-500/30">
-                  <p>> Scanning vehicle...</p>
-                  <p>> Checking SASSMAQ compliance...</p>
-                  <p>> <span className="text-red-400">Alert: Safety Cone Missing</span></p>
-                  <p>> Generating Non-Conformity Report...</p>
+                  <p>&gt; Scanning vehicle...</p>
+                  <p>&gt; Checking SASSMAQ compliance...</p>
+                  <p>&gt; <span className="text-red-400">Alert: Safety Cone Missing</span></p>
+                  <p>&gt; Generating Non-Conformity Report...</p>
                 </div>
 
               </div>

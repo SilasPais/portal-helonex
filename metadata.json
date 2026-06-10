@@ -1,7 +1,5 @@
 {
-  "name": "HELONEX Global",
-  "description": "Ecossistema de Inteligência Logística, Soberania Digital e Gestão de Risco. Auditoria Regulatória ANTT, SASSMAQ e JusTech.",
-  "requestFramePermissions": [
-    "camera"
-  ]
+  "name": "HELONEX S-O-L",
+  "description": "Sistemas Operacional da Luz (S-O-L). Ecossistema de Inteligência Artificial, Defesa Jurídica e Gestão de Transporte.",
+  "requestFramePermissions": []
 }

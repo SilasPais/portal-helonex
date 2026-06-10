@@ -12,7 +12,7 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ onNavigateToConstruction, onOpenPrivacy, onNavigate }) => {
   const handleLinkClick = (e: React.MouseEvent, area: string) => {
     e.preventDefault();
-    if (area === 'Quem Somos' && onNavigate) {
+    if ((area === 'Quem Somos' || area === 'Filosofia') && onNavigate) {
         onNavigate(Section.ABOUT);
         return;
     }
@@ -50,16 +50,16 @@ const Footer: React.FC<FooterProps> = ({ onNavigateToConstruction, onOpenPrivacy
               <div className="w-8 h-8 bg-gradient-to-br from-hlx-gold to-orange-500 rounded flex items-center justify-center mr-2 shadow-lg">
                 <Sun className="text-white" size={16} />
               </div>
-              <h3 className="text-white font-bold text-lg font-display">HELONEX BRASIL</h3>
+              <h3 className="text-white font-bold text-lg font-display uppercase tracking-tighter">HELONEX GLOBAL</h3>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Ecossistema de Inteligência Logística.<br/>
               Powered by <strong>HELONEX GOVTECH</strong>.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-hlx-gold"><Instagram size={20} /></a>
-              <a href="#" className="text-gray-400 hover:text-hlx-gold"><Facebook size={20} /></a>
-              <a href="#" className="text-gray-400 hover:text-hlx-gold"><Linkedin size={20} /></a>
+              <a href="#" className="text-gray-400 hover:text-hlx-gold transition-colors"><Instagram size={20} /></a>
+              <a href="#" className="text-gray-400 hover:text-hlx-gold transition-colors"><Facebook size={20} /></a>
+              <a href="#" className="text-gray-400 hover:text-hlx-gold transition-colors"><Linkedin size={20} /></a>
             </div>
           </div>
 
@@ -86,7 +86,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateToConstruction, onOpenPrivacy
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-hlx-gold mt-1" />
-                <span>Atendimento Nacional Digital</span>
+                <span>Centro de Inteligência Digital</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-hlx-gold" />
@@ -97,7 +97,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateToConstruction, onOpenPrivacy
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-          <p>&copy; {new Date().getFullYear()} HELONEX BRASIL. Todos os direitos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} HELONEX GLOBAL. Todos os direitos reservados.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <button onClick={onOpenPrivacy} className="hover:text-white transition-colors">Privacidade</button>
             <button onClick={onOpenPrivacy} className="hover:text-white transition-colors">LGPD</button>

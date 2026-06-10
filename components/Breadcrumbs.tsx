@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ChevronRight, Home, ArrowLeft } from 'lucide-react';
 import { Section } from '../types';
@@ -104,7 +105,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ activeSection, onNavigate }) 
           {/* Botão de Voltar Rápido (Mobile Friendly) */}
           <button 
             onClick={() => onNavigate(path[path.length - 2]?.section || Section.HOME)}
-            className="mr-4 md:hidden flex items-center gap-1 text-gray-400 hover:text-white border-r border-white/10 pr-4"
+            className="mr-4 md:hidden flex items-center gap-1 text-gray-400 hover:text-white border-r border-white/10 pr-4 active:scale-95 transition-transform"
           >
             <ArrowLeft size={16} /> Voltar
           </button>
@@ -116,10 +117,10 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ activeSection, onNavigate }) 
               <button
                 onClick={() => !step.active && onNavigate(step.section)}
                 disabled={step.active}
-                className={`flex items-center gap-2 transition-colors ${
+                className={`flex items-center gap-2 transition-all ${
                   step.active 
                     ? 'text-hlx-gold font-bold cursor-default' 
-                    : 'text-gray-400 hover:text-white'
+                    : 'text-gray-400 hover:text-white active:scale-95'
                 }`}
               >
                 {step.icon && step.icon}

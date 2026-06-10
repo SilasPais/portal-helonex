@@ -1,5 +1,11 @@
-import React from 'react';
-import { CheckCircle, Zap, Shield, Globe, Lock, ArrowRight, PlayCircle, Truck, Bus, Anchor, Layers, Calculator, Crown, Sun, Briefcase } from 'lucide-react';
+
+import React, { useState } from 'react';
+import { 
+  CheckCircle, Zap, Shield, Globe, Lock, ArrowRight, PlayCircle, 
+  Truck, Bus, Anchor, Layers, Calculator, Crown, Sun, Briefcase, 
+  Gavel, GraduationCap, Handshake, Eye, Activity, Star, ChevronDown, 
+  Magnet, Server, Database, TrendingDown, AlertOctagon, Scale
+} from 'lucide-react';
 
 interface SalesFunnelProps {
   onBuyAccess: () => void;
@@ -7,174 +13,319 @@ interface SalesFunnelProps {
 }
 
 const SalesFunnel: React.FC<SalesFunnelProps> = ({ onBuyAccess, onBack }) => {
+  const [activeTab, setActiveTab] = useState<'individual' | 'corporate'>('individual');
+
   return (
-    <div className="min-h-screen bg-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-white overflow-hidden pb-24">
       
-      <div className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 text-center bg-[url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center bg-no-repeat bg-fixed">
+      {/* HERO SECTION */}
+      <div className="relative pt-24 pb-12 px-4 text-center bg-[url('https://images.unsplash.com/photo-1492138786289-d35ea832da43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center">
         <div className="absolute inset-0 bg-slate-900/90 bg-gradient-to-b from-slate-900/95 via-slate-900/80 to-slate-900"></div>
         
         <div className="relative z-10 max-w-5xl mx-auto animate-fade-in-up">
-          <span className="inline-block py-1.5 px-4 rounded-full bg-hlx-blue/20 text-hlx-blue border border-hlx-blue/30 text-xs font-bold uppercase tracking-widest mb-6 flex items-center justify-center gap-2 w-fit mx-auto">
-            <Shield size={14} /> GovTech & Legal Tech
+          <span className="inline-block py-1.5 px-4 rounded-full bg-hlx-gold/20 text-hlx-gold border border-hlx-gold/30 text-[10px] font-bold uppercase tracking-widest mb-6 animate-pulse">
+            <Crown size={14} className="inline mr-1" /> Modelo de Negócio 2026
           </span>
-          <h1 className="text-4xl md:text-7xl font-display font-bold leading-tight mb-8">
-            Assuma o Controle da<br/>
-            <span className="text-hlx-gold">Sua Transportadora.</span>
+          <h1 className="text-4xl md:text-6xl font-display font-bold leading-tight mb-6">
+            Sistemas Operacional <br/>
+            <span className="text-hlx-gold">da Luz (S-O-L).</span>
           </h1>
-          <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Abandone a ineficiência. Tenha acesso direto ao sistema que organiza sua frota, monitora vencimentos e treina sua equipe com a inteligência do <strong>Ecossistema HELONEX</strong>.
+          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Do cadastro gratuito à blindagem corporativa. Escolha o nível de soberania que sua operação exige hoje.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={onBuyAccess}
-              className="group relative inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-slate-900 transition-all duration-200 bg-hlx-gold rounded-lg hover:bg-yellow-400 shadow-lg shadow-yellow-500/20"
-            >
-              ATIVAR SISTEMA PRO
-              <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button 
-              onClick={onBack}
-              className="inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white transition-all duration-200 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10"
-            >
-              Conhecer a Metodologia
-            </button>
+
+          <div className="flex justify-center gap-4 mb-12">
+             <button 
+                onClick={() => setActiveTab('individual')}
+                className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${activeTab === 'individual' ? 'bg-hlx-gold text-slate-900' : 'bg-slate-800 text-gray-400 border border-white/10'}`}
+             >
+                Para Motoristas & Pequenas Frotas
+             </button>
+             <button 
+                onClick={() => setActiveTab('corporate')}
+                className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${activeTab === 'corporate' ? 'bg-hlx-blue text-white' : 'bg-slate-800 text-gray-400 border border-white/10'}`}
+             >
+                Para Médias & Grandes Empresas
+             </button>
           </div>
         </div>
       </div>
 
-      <div className="py-20 bg-slate-950 border-t border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-display font-bold text-white">O Custo da Desinformação</h2>
-            <p className="text-gray-400 mt-4">Comparativo real entre o modelo analógico e o modelo tecnológico HELONEX.</p>
-          </div>
+      {/* ARQUITETURA DE NEGÓCIO */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        
+        {activeTab === 'individual' ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                {/* PILAR 1: O ÍMÃ (FREEMIUM) */}
+                <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all flex flex-col">
+                    <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-6">
+                        <Magnet size={24} className="text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">Acesso Gratuito</h3>
+                    <p className="text-sm text-gray-400 mb-6 min-h-[40px]">A porta de entrada. Regularize-se sem custo e entre para a comunidade.</p>
+                    <ul className="space-y-4 mb-8 flex-1">
+                        <li className="flex items-start gap-3 text-sm text-gray-300">
+                            <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>RNTRC Digital Assistido</strong>
+                                <p className="text-xs text-gray-500">Validador de requisitos automático.</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3 text-sm text-gray-300">
+                            <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>Raio-X de Conformidade</strong>
+                                <p className="text-xs text-gray-500">Diagnóstico de IQT e Multas.</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3 text-sm text-gray-300">
+                            <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>NewsBoard Oficial</strong>
+                                <p className="text-xs text-gray-500">Monitoramento do DOU em tempo real.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <button onClick={onBuyAccess} className="w-full py-3 border border-white/10 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/5">
+                        Criar Conta Grátis
+                    </button>
+                </div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-             <div className="bg-slate-900/50 p-8 rounded-2xl border border-red-500/20 opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-               <h3 className="text-red-400 font-bold text-xl mb-6 flex items-center gap-2">
-                 <span className="text-red-500 text-2xl">×</span> Modelo Analógico (Manual)
-               </h3>
-               <ul className="space-y-4 mb-8">
-                 <li className="flex justify-between text-gray-400 border-b border-white/5 pb-2">
-                   <span>Custo Operacional</span>
-                   <span className="font-bold text-white">Alto (Ineficiência)</span>
-                 </li>
-                 <li className="flex justify-between text-gray-400 border-b border-white/5 pb-2">
-                   <span>Risco de Erro Humano</span>
-                   <span className="font-bold text-red-500">MUITO ALTO</span>
-                 </li>
-                 <li className="flex justify-between text-gray-400 border-b border-white/5 pb-2">
-                   <span>Controle do Processo</span>
-                   <span className="font-bold text-red-500">ZERO</span>
-                 </li>
-               </ul>
-               <div className="text-center pt-4">
-                 <p className="text-sm text-gray-500 mb-1">Resultado</p>
-                 <p className="text-xl font-bold text-red-500">Vulnerabilidade Jurídica.</p>
-               </div>
-             </div>
+                {/* PILAR 2: A ASSINATURA (RECORRÊNCIA) - CORE */}
+                <div className="bg-slate-900 border-2 border-hlx-gold rounded-2xl p-8 relative transform md:-translate-y-4 shadow-2xl shadow-hlx-gold/10 flex flex-col">
+                    <div className="absolute top-0 right-0 bg-hlx-gold text-slate-900 text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase">Recomendado</div>
+                    <div className="w-12 h-12 bg-hlx-gold rounded-full flex items-center justify-center mb-6">
+                        <Shield size={24} className="text-slate-900" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">Helonex Guardião</h3>
+                    <p className="text-sm text-gray-400 mb-6 min-h-[40px]">Manutenção preventiva da saúde jurídica e operacional da sua empresa.</p>
+                    
+                    <div className="mb-6">
+                        <span className="text-3xl font-bold text-white">R$ 29,90</span><span className="text-gray-500 text-sm">/mês</span>
+                    </div>
 
-             <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-8 rounded-2xl border border-hlx-gold shadow-2xl relative transform md:scale-105">
-               <div className="absolute top-0 right-0 bg-hlx-gold text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">PREMIUM</div>
-               <h3 className="text-hlx-gold font-bold text-xl mb-6 flex items-center gap-2">
-                 <CheckCircle className="text-hlx-gold" /> Modelo Tecnológico (Plataforma)
-               </h3>
-               <ul className="space-y-4 mb-8">
-                 <li className="flex justify-between text-gray-300 border-b border-white/5 pb-2">
-                   <span>Sistema Autônomo (GovTech)</span>
-                   <span className="font-bold text-white">ILIMITADO</span>
-                 </li>
-                 <li className="flex justify-between text-gray-300 border-b border-white/5 pb-2">
-                   <span>Mentor Estratégico (IA)</span>
-                   <span className="font-bold text-white">24 HORAS</span>
-                 </li>
-                 <li className="flex justify-between text-gray-300 border-b border-white/5 pb-2">
-                   <span>Soberania de Dados</span>
-                   <span className="font-bold text-white">TOTAL</span>
-                 </li>
-               </ul>
-               <div className="text-center pt-4">
-                 <p className="text-sm text-gray-400 mb-1">Assinatura Anual</p>
-                 <p className="text-4xl font-display font-bold text-white">R$ 297,00</p>
-                 <p className="text-xs text-hlx-gold mt-2">Menos de R$ 1,00 por dia para sua segurança.</p>
-               </div>
-             </div>
-          </div>
-        </div>
+                    <ul className="space-y-4 mb-8 flex-1">
+                        <li className="flex items-start gap-3 text-sm text-white">
+                            <CheckCircle size={16} className="text-hlx-gold mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>Monitoramento 360°</strong>
+                                <p className="text-xs text-gray-400">Varredura diária de CNH, RNTRC e Multas.</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3 text-sm text-white">
+                            <CheckCircle size={16} className="text-hlx-gold mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>Mentor IA Ilimitado</strong>
+                                <p className="text-xs text-gray-400">Consultas sobre Lei 14.599 e Seguros.</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3 text-sm text-white">
+                            <CheckCircle size={16} className="text-hlx-gold mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>Clube de Vantagens Ativo</strong>
+                                <p className="text-xs text-gray-400">Descontos reais em Pneus e Diesel.</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3 text-sm text-white">
+                            <CheckCircle size={16} className="text-hlx-gold mt-0.5 shrink-0"/> 
+                            <div>
+                                <strong>Cloud Documental</strong>
+                                <p className="text-xs text-gray-400">Gestão de CRLV-e, Apólices e Laudos.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <button onClick={onBuyAccess} className="w-full py-4 bg-hlx-gold hover:bg-yellow-400 text-slate-900 font-bold rounded-xl transition-all shadow-lg">
+                        Assinar Guardião
+                    </button>
+                </div>
+
+                {/* PILAR 3: PAY-PER-USE (BALCÃO DE SERVIÇOS) */}
+                <div className="bg-slate-900 border border-blue-500/30 rounded-2xl p-8 hover:border-blue-500/50 transition-all flex flex-col">
+                    <div className="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center mb-6">
+                        <Briefcase size={24} className="text-blue-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">Balcão de Serviços</h3>
+                    <p className="text-sm text-gray-400 mb-6 min-h-[40px]">Soluções de alta complexidade ("Cirurgias") contratadas sob demanda.</p>
+                    
+                    <div className="space-y-4 mb-8 flex-1">
+                        <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                            <div>
+                                <span className="text-gray-300 flex items-center gap-2"><Gavel size={14} className="text-red-400"/> JusTech (Recursos)</span>
+                                <p className="text-[9px] text-gray-500 ml-6">*Multas &gt; R$ 1.500</p>
+                            </div>
+                            <span className="text-blue-400 font-bold text-right">R$ 550 + 7,5%</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                            <span className="text-gray-300 flex items-center gap-2"><Globe size={14} className="text-green-400"/> Licenças (AET/TRIC)</span>
+                            <span className="text-blue-400 font-bold">Sob Consulta</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                            <span className="text-gray-300 flex items-center gap-2"><Handshake size={14} className="text-hlx-gold"/> Helonex Resolve (ODR)</span>
+                            <span className="text-blue-400 font-bold">R$ 550 + 7,5%</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                            <span className="text-gray-300 flex items-center gap-2"><GraduationCap size={14} className="text-purple-400"/> EduTech Premium</span>
+                            <span className="text-blue-400 font-bold">Por Curso</span>
+                        </div>
+                    </div>
+                    
+                    <button className="w-full py-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors">
+                        Ver Tabela Completa
+                    </button>
+                </div>
+
+            </div>
+        ) : (
+            <div className="animate-fade-in space-y-8">
+                
+                {/* HEADLINE B2B */}
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-display font-bold text-white mb-2">
+                        Blindagem de Frota & <span className="text-hlx-blue">JusTech Corporativo</span>
+                    </h2>
+                    <p className="text-gray-400 max-w-2xl mx-auto">
+                        Sistema integrado de monitoramento e defesa. Pague pelo volume da sua frota e tenha uma banca jurídica digital à disposição.
+                    </p>
+                </div>
+
+                {/* TABELA DE GRADUAÇÃO (TIERED PRICING) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    {/* TIER 1: PEQUENAS FROTAS */}
+                    <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all flex flex-col">
+                        <div className="mb-4">
+                            <span className="text-xs font-bold bg-slate-800 text-gray-400 px-2 py-1 rounded uppercase">Start</span>
+                            <h3 className="text-xl font-bold text-white mt-2">1 a 10 Veículos</h3>
+                        </div>
+                        <div className="mb-6">
+                            <span className="text-3xl font-bold text-white">R$ 35,00</span>
+                            <span className="text-gray-500 text-sm">/placa/mês</span>
+                        </div>
+                        <ul className="space-y-3 mb-8 flex-1">
+                            <li className="flex items-center gap-2 text-sm text-gray-400"><CheckCircle size={14} className="text-green-500"/> Monitoramento 24h</li>
+                            <li className="flex items-center gap-2 text-sm text-gray-400"><CheckCircle size={14} className="text-green-500"/> Alertas via WhatsApp</li>
+                            <li className="flex items-center gap-2 text-sm text-gray-400"><CheckCircle size={14} className="text-green-500"/> Painel Básico</li>
+                        </ul>
+                        <button onClick={onBuyAccess} className="w-full py-3 border border-white/10 rounded-xl text-sm font-bold text-white hover:bg-white/5">
+                            Começar Agora
+                        </button>
+                    </div>
+
+                    {/* TIER 2: MÉDIAS FROTAS (ALVO) */}
+                    <div className="bg-slate-900 border-2 border-hlx-gold rounded-2xl p-6 relative transform md:-translate-y-2 shadow-2xl shadow-hlx-gold/10 flex flex-col">
+                        <div className="absolute top-0 right-0 bg-hlx-gold text-slate-900 text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase">Melhor Custo-Benefício</div>
+                        <div className="mb-4">
+                            <span className="text-xs font-bold bg-hlx-gold/20 text-hlx-gold px-2 py-1 rounded uppercase">Standard</span>
+                            <h3 className="text-xl font-bold text-white mt-2">11 a 50 Veículos</h3>
+                        </div>
+                        <div className="mb-6">
+                            <span className="text-4xl font-bold text-white">R$ 25,00</span>
+                            <span className="text-gray-500 text-sm">/placa/mês</span>
+                        </div>
+                        <ul className="space-y-3 mb-8 flex-1">
+                            <li className="flex items-center gap-2 text-sm text-white"><CheckCircle size={14} className="text-hlx-gold"/> <strong>Monitoramento 24h</strong></li>
+                            <li className="flex items-center gap-2 text-sm text-white"><CheckCircle size={14} className="text-hlx-gold"/> <strong>JusTech Híbrido Ativo</strong></li>
+                            <li className="flex items-center gap-2 text-sm text-white"><CheckCircle size={14} className="text-hlx-gold"/> Painel Gestor de Frotas</li>
+                            <li className="flex items-center gap-2 text-sm text-white"><CheckCircle size={14} className="text-hlx-gold"/> Relatórios Gerenciais</li>
+                        </ul>
+                        <button onClick={onBuyAccess} className="w-full py-3 bg-hlx-gold text-slate-900 font-bold rounded-xl text-sm hover:bg-yellow-400 shadow-lg">
+                            Migrar Frota
+                        </button>
+                    </div>
+
+                    {/* TIER 3: GRANDES FROTAS */}
+                    <div className="bg-slate-900 border border-blue-500/30 rounded-2xl p-6 hover:border-blue-500/50 transition-all flex flex-col">
+                        <div className="mb-4">
+                            <span className="text-xs font-bold bg-blue-500/20 text-blue-400 px-2 py-1 rounded uppercase">Enterprise</span>
+                            <h3 className="text-xl font-bold text-white mt-2">Acima de 51</h3>
+                        </div>
+                        <div className="mb-6">
+                            <span className="text-3xl font-bold text-white">R$ 19,90</span>
+                            <span className="text-gray-500 text-sm">/placa/mês</span>
+                        </div>
+                        <ul className="space-y-3 mb-8 flex-1">
+                            <li className="flex items-center gap-2 text-sm text-gray-400"><CheckCircle size={14} className="text-blue-500"/> Tudo do plano Standard</li>
+                            <li className="flex items-center gap-2 text-sm text-gray-400"><CheckCircle size={14} className="text-blue-500"/> API de Integração (ERP)</li>
+                            <li className="flex items-center gap-2 text-sm text-gray-400"><CheckCircle size={14} className="text-blue-500"/> Gerente de Conta Dedicado</li>
+                        </ul>
+                        <button onClick={onBuyAccess} className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-sm transition-colors">
+                            Falar com Consultor
+                        </button>
+                    </div>
+
+                </div>
+
+                {/* JUSTECH DETAIL BOX */}
+                <div className="bg-gradient-to-r from-slate-900 to-slate-800 border border-white/10 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
+                    <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-3 bg-red-500/20 rounded-xl text-red-400">
+                                <Gavel size={32} />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold text-white">Modelo JusTech B2B</h3>
+                                <p className="text-gray-400 text-sm">Advocacia de Precisão sob Demanda</p>
+                            </div>
+                        </div>
+                        <p className="text-gray-300 leading-relaxed mb-4">
+                            Diferente de escritórios tradicionais que cobram mensalidades fixas altas, nós operamos no modelo de sucesso. Você paga uma taxa administrativa mínima por recurso protocolado e dividimos o ganho no êxito.
+                        </p>
+                        <div className="flex flex-wrap gap-4">
+                            <div className="bg-slate-950 px-4 py-2 rounded-lg border border-white/5">
+                                <span className="block text-[10px] text-gray-500 uppercase font-bold">Taxa de Recurso</span>
+                                <span className="text-xl font-bold text-white">R$ 550,00</span>
+                            </div>
+                            <div className="bg-slate-950 px-4 py-2 rounded-lg border border-white/5">
+                                <span className="block text-[10px] text-gray-500 uppercase font-bold">Taxa de Sucesso</span>
+                                <span className="text-xl font-bold text-green-400">7,5%</span>
+                                <span className="text-[10px] text-gray-500 ml-1">do valor economizado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="md:w-1/3 w-full bg-slate-950 p-6 rounded-xl border border-white/5">
+                        <h4 className="text-white font-bold text-sm mb-4 border-b border-white/10 pb-2">Simulação Real</h4>
+                        <div className="space-y-3 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Multa Evitada:</span>
+                                <span className="text-white font-bold">R$ 5.869,00</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Custo Fixo:</span>
+                                <span className="text-red-400">R$ 550,00</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Êxito (7,5%):</span>
+                                <span className="text-red-400">R$ 440,17</span>
+                            </div>
+                            <div className="flex justify-between pt-2 border-t border-white/10">
+                                <span className="text-green-400 font-bold">Economia Líquida:</span>
+                                <span className="text-green-400 font-bold">R$ 4.878,83</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        )}
+
       </div>
 
-      <div className="py-20 bg-hlx-navy relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-          <h2 className="text-hlx-gold font-bold tracking-widest uppercase text-sm mb-4">Tecnologia Proprietária</h2>
-          <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-12">
-            Inteligência que Gera <br/>Prosperidade
+      {/* CTA FINAL */}
+      <div className="py-12 px-4 text-center relative z-10 mt-12">
+          <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-6">
+            Inovação "Business Lego": O DIY da sua Carreira.
           </h3>
+          <p className="text-gray-400 mb-8 max-w-lg mx-auto text-sm">
+            Construa sua empresa nível por nível. O sistema carrega os POPs operacionais e PAPs de gestão automaticamente.
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-8 text-left">
-            <div className="bg-slate-800 p-6 rounded-xl border border-white/5 hover:border-hlx-gold/30 transition-colors">
-              <Zap className="text-hlx-gold mb-4" size={32} />
-              <h4 className="font-bold text-white text-lg mb-2">Agilidade Processual</h4>
-              <p className="text-gray-400 text-sm">Automação de processos repetitivos. O que levava dias, agora leva minutos.</p>
-            </div>
-            <div className="bg-slate-800 p-6 rounded-xl border border-white/5 hover:border-hlx-gold/30 transition-colors">
-              <Shield className="text-hlx-gold mb-4" size={32} />
-              <h4 className="font-bold text-white text-lg mb-2">Blindagem Jurídica</h4>
-              <p className="text-gray-400 text-sm">Monitoramento preventivo de multas e vencimentos (Matriz de Risco).</p>
-            </div>
-            <div className="bg-slate-800 p-6 rounded-xl border border-white/5 hover:border-hlx-gold/30 transition-colors">
-              <Globe className="text-hlx-gold mb-4" size={32} />
-              <h4 className="font-bold text-white text-lg mb-2">Visão Global</h4>
-              <p className="text-gray-400 text-sm">Do RNTRC nacional à expansão no Mercosul. Uma rota completa de crescimento.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="py-20 bg-slate-900">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-3xl p-1 border border-hlx-gold/30 shadow-2xl">
-            <div className="bg-slate-900 rounded-[22px] p-8 md:p-12 text-center">
-              <h3 className="text-gray-400 uppercase tracking-widest text-sm font-bold mb-4">Plano Anual - HELONEX PRO</h3>
-              <div className="text-4xl md:text-6xl font-display font-bold text-white mb-6">
-                R$ 297<span className="text-2xl text-gray-500 font-sans font-normal">/ano</span>
-              </div>
-              <p className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg">
-                Tenha o "Departamento de Trânsito" completo dentro da sua empresa.
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-4 text-left max-w-lg mx-auto mb-10">
-                <div className="flex items-center gap-3">
-                  <CheckCircle size={20} className="text-hlx-gold" />
-                  <span className="text-gray-300">Plataforma GovTech Completa</span>
-                </div>
-                 <div className="flex items-center gap-3">
-                  <CheckCircle size={20} className="text-hlx-gold" />
-                  <span className="text-gray-300">Mentoria IA Ilimitada</span>
-                </div>
-                 <div className="flex items-center gap-3">
-                  <CheckCircle size={20} className="text-hlx-gold" />
-                  <span className="text-gray-300">Cursos de Capacitação</span>
-                </div>
-                 <div className="flex items-center gap-3">
-                  <CheckCircle size={20} className="text-hlx-gold" />
-                  <span className="text-gray-300">Comunidade de Elite</span>
-                </div>
-              </div>
-
-              <button 
-                onClick={onBuyAccess}
-                className="w-full md:w-auto px-12 py-5 text-xl font-bold text-slate-900 bg-hlx-gold rounded-xl hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/20"
-              >
-                COMEÇAR AGORA
-              </button>
-              
-              <p className="mt-6 text-xs text-gray-500">
-                Garantia de 7 dias ou seu dinheiro de volta. Sem letras miúdas (Yosher).
-              </p>
-            </div>
-          </div>
-        </div>
+          <button 
+            onClick={onBuyAccess}
+            className="w-full md:w-auto px-12 py-5 text-xl font-bold text-slate-900 bg-hlx-gold rounded-xl hover:bg-yellow-400 transition-colors shadow-2xl shadow-yellow-500/20 flex items-center justify-center gap-3 mx-auto"
+          >
+            COMEÇAR MINHA JORNADA <ArrowRight size={24} />
+          </button>
       </div>
 
     </div>

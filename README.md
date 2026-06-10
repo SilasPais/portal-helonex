@@ -1,5 +1,5 @@
 
-# 🚛 Portal HELONEX Brasil - Sistema Operacional
+# 🚛 Sistemas Operacional da Luz (S-O-L) - Portal HELONEX Brasil
 
 **Domínio Oficial:** helonex.com.br
 **Status:** Pronto para Produção (Conectado ao Supabase)

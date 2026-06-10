@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
-import { Lock, ArrowRight, ShieldCheck, Truck, Briefcase, Key, Sun, UserPlus, Anchor } from 'lucide-react';
+import { Lock, ArrowRight, ShieldCheck, Truck, Briefcase, Key, Sun, UserPlus, Anchor, AlertTriangle, Loader2 } from 'lucide-react';
 import { UserRole } from '../types';
+import { supabase } from '../src/lib/supabase';
 
 interface LoginScreenProps {
   onLogin: (role: UserRole) => void;
@@ -12,8 +13,46 @@ interface LoginScreenProps {
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack, onNavigateToRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        // Por enquanto, assumimos que todo usuário logado é um 'subscriber'
+        // Futuramente, podemos buscar a role no banco de dados
+        onLogin('subscriber');
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      let message = err.message || 'Credenciais inválidas ou usuário não registrado.';
+      
+      if (message.includes('Failed to fetch')) {
+        message = 'Erro de conexão com o servidor. Verifique se o Supabase está configurado corretamente no painel de configurações.';
+      }
+      
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSimulatedLogin = (role: UserRole) => {
+    // Mantendo para fins de demonstração/teste rápido se necessário, 
+    // mas o foco agora é a auth real.
     onLogin(role);
   };
 
@@ -47,15 +86,22 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack, onNavigateTo
         </div>
 
         <div className="md:w-1/2 p-10 bg-slate-800">
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg text-xs flex items-center gap-2">
+                <AlertTriangle size={16} />
+                {error}
+              </div>
+            )}
             <div>
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">E-mail Corporativo / CPF</label>
               <input 
-                type="text" 
+                type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-slate-900 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-hlx-gold focus:ring-1 focus:ring-hlx-gold outline-none transition-all"
                 placeholder="usuario@helonex.global"
+                required
               />
             </div>
             <div>
@@ -66,13 +112,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack, onNavigateTo
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-900 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-hlx-gold focus:ring-1 focus:ring-hlx-gold outline-none transition-all"
                 placeholder="••••••••"
+                required
               />
             </div>
 
             <button 
-              className="w-full bg-hlx-gold hover:bg-yellow-400 text-slate-900 font-bold py-3 rounded-lg transition-colors shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-hlx-gold hover:bg-yellow-400 text-slate-900 font-bold py-3 rounded-lg transition-colors shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              CONECTAR AO SISTEMA <ArrowRight size={20} />
+              {loading ? <Loader2 size={20} className="animate-spin" /> : <>CONECTAR AO SISTEMA <ArrowRight size={20} /></>}
             </button>
           </form>
 

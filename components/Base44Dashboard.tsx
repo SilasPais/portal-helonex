@@ -12,8 +12,9 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import { StatData } from '../types';
+import { StatData, UserContext } from '../types';
 import { Activity, Bell, CheckCircle, AlertOctagon } from 'lucide-react';
+import BizBuilder from './BizBuilder';
 
 const data: StatData[] = [
   { name: 'Jan', compliance: 65, risk: 40 },
@@ -24,7 +25,11 @@ const data: StatData[] = [
   { name: 'Jun', compliance: 95, risk: 10 },
 ];
 
-const Base44Dashboard: React.FC = () => {
+interface Base44DashboardProps {
+  userContext?: UserContext | null;
+}
+
+const Base44Dashboard: React.FC<Base44DashboardProps> = ({ userContext }) => {
   return (
     <div className="py-20 bg-slate-950 relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -114,6 +119,10 @@ const Base44Dashboard: React.FC = () => {
               Ver Relatório Completo
             </button>
           </div>
+        </div>
+        
+        <div className="mt-12">
+          <BizBuilder userContext={userContext} />
         </div>
       </div>
     </div>

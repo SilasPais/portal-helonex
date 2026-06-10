@@ -5,33 +5,48 @@ import {
   ShieldCheck, TrendingUp, AlertOctagon, Zap, Search, MoreHorizontal, X, ExternalLink, BookOpen, Trophy, ArrowRight, GraduationCap, Lock, Key, CreditCard,
   FileKey, RefreshCw, Landmark, Siren, Building2, Eye, BrainCircuit, Activity, Scale, Gavel, FileText, Printer, Calculator, Download, DollarSign, Wallet,
   Receipt, ShoppingCart, Users, UserCheck, Stethoscope, Clock, ShieldAlert, CheckCircle2, PlayCircle, MapPin, ZapOff, Anchor, Pill, Gauge, Trash2, HardHat, Percent, UserPlus, GaugeCircle, Info, Flame, AlertCircle, Leaf, Scan, Camera, QrCode, Wifi, Settings, Signal, HelpCircle, Server, Smartphone, Cpu, Cable, Router, User, List, UploadCloud, FileInput, CheckSquare, ClipboardList, Bookmark, LifeBuoy, Send, MessageSquare, ChevronRight, Tag,
-  Sparkles, Star, Ban, FileWarning, Plane, Coins, Repeat, Globe, Sun, Briefcase, Thermometer, Armchair, Smile, Cloud, HeartPulse, Wrench, RefreshCcw, Bell, CheckSquare as ChecklistIcon, Target, Map, Heart, Gem, PieChart, Award, Medal, HeartHandshake, Microscope, Database
+  Sparkles, Star, Ban, FileWarning, Plane, Coins, Repeat, Globe, Sun, Briefcase, Thermometer, Armchair, Smile, Cloud, HeartPulse, Wrench, RefreshCcw, Bell, CheckSquare as ChecklistIcon, Target, Map, Heart, Gem, PieChart, Award, Medal, HeartHandshake, Microscope, Database, Save, ClipboardCheck, FileDigit, BarChart4, Radio, LayoutGrid, LayoutGrid as LayoutGridIcon, Phone, Layers, Newspaper, Milestone, Terminal, Sprout, Compass, Handshake
 } from 'lucide-react';
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar 
-} from 'recharts';
 import { guardianEngine } from '../services/guardianSystem';
-import { CompanyProfile, QualitySealData } from '../types';
-import GuardianSeal from './GuardianSeal';
-import PatrimonialDiagnostic from './PatrimonialDiagnostic';
-import NeuroTelemetry from './NeuroTelemetry';
+import { notificationService } from '../services/notificationService';
+import { CompanyProfile, Monitriip4Status, SAC_OMISSION_FINE, ServiceRequest } from '../types';
+import FiscalReformSimulator from './FiscalReformSimulator';
+import BizBuilder from './BizBuilder';
+import FleetManager from './FleetManager';
 import FinancialModule from './FinancialModule';
-import DriverRecognitionModule from './DriverRecognitionModule';
+import IssuanceModule from './IssuanceModule';
+import ChecklistModule from './ChecklistModule';
+import RiskMonitor from './RiskMonitor';
+import NeuroTelemetry from './NeuroTelemetry';
+import AnalyticsHub from './AnalyticsHub';
 import QualityManagement from './QualityManagement';
 import RoutesMap from './RoutesMap';
-import IntegrationsHub from './IntegrationsHub';
-import RiskMonitor from './RiskMonitor';
+import BackupManager from './BackupManager';
+import ApiDocs from './ApiDocs';
+import CriticalMissions from './CriticalMissions';
+import DOUIntelligence from './DOUIntelligence';
+import ZmrcManager from './ZmrcManager';
+import CareerTreeModule from './CareerTreeModule';
+import StrategicDecisionModule from './StrategicDecisionModule'; 
+import HelonexResolve from './HelonexResolve';
+import ImplementationDossier from './ImplementationDossier';
+import DigitalIdentityCard from './DigitalIdentityCard'; 
+import SmartFreightBoard from './SmartFreightBoard'; 
+import { FinanceManager } from './FinanceManager';
 
 interface ClientDashboardProps {
   onNavigateToSuccess?: () => void;
 }
 
-type DashboardTab = 'audit_center' | 'risk_monitor' | 'integrations' | 'rhtec' | 'finance' | 'neuro' | 'wealth' | 'quality' | 'routes';
+type DashboardTab = 'control_tower' | 'checklist' | 'risk_monitor' | 'issuance' | 'biz_builder' | 'finance' | 'accounting' | 'neuro' | 'quality' | 'routes' | 'calculator' | 'analytics' | 'fleet' | 'api_docs' | 'critical' | 'dou' | 'zmrc' | 'career_tree' | 'strategy' | 'resolve' | 'dossier';
 
 const ClientDashboard: React.FC<ClientDashboardProps> = ({ onNavigateToSuccess }) => {
-  const [activeTab, setActiveTab] = useState<DashboardTab>('audit_center');
+  const [activeTab, setActiveTab] = useState<DashboardTab>('control_tower');
   const [company, setCompany] = useState<CompanyProfile | null>(null);
-  const [showValuationModal, setShowValuationModal] = useState(false);
+  const [showBackupModal, setShowBackupModal] = useState(false);
+  
+  // Status System (Mock)
+  const [systemHealth, setSystemHealth] = useState(98);
 
   const refreshData = () => {
     const companyData = guardianEngine.getCompanyData();
@@ -40,249 +55,269 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ onNavigateToSuccess }
 
   useEffect(() => {
     refreshData();
+    notificationService.scheduleSmartAlerts();
   }, []);
 
-  const handleStartValuation = () => {
-      setShowValuationModal(true);
+  const getStatusColor = (status: string) => {
+      switch(status) {
+          case 'AGUARDANDO_PAGAMENTO': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50';
+          case 'EM_ANALISE': return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
+          case 'CONCLUIDO': return 'bg-green-500/20 text-green-400 border-green-500/50';
+          case 'ACAO_REQUERIDA': return 'bg-red-500/20 text-red-400 border-red-500/50';
+          default: return 'bg-slate-800 text-gray-400';
+      }
   };
 
-  if (!company) return <div className="p-8 text-white flex justify-center"><div className="animate-spin text-hlx-gold"><RefreshCw /></div></div>;
+  if (!company) return <div className="p-8 text-white flex justify-center h-screen items-center bg-[#0F172A]"><div className="animate-spin text-hlx-gold"><RefreshCw size={60} /></div></div>;
 
   return (
-    <div className="min-h-screen bg-slate-950 p-4 md:p-8 relative">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* HEADER: CONCEITO DIAMANTE */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-white/10 pb-6 gap-4">
-           <div>
-             <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded bg-cyan-500/10 flex items-center gap-1">
-                    <Gem size={10} /> Helonex Auditoria Digital
-                </span>
-             </div>
-             <h1 className="text-2xl md:text-3xl font-display font-bold text-white flex items-center gap-2">
-               Painel de Controle: {company.name}
-             </h1>
-             <p className="text-gray-400 text-sm mt-1 flex items-center gap-2">
-                <Microscope size={14} className="text-hlx-gold" />
-                Status da Auditoria: <span className="text-green-400 font-bold">Conectado ao ERP</span>
-             </p>
-           </div>
-           
-           <div className="flex items-center gap-4">
-              <div 
-                onClick={onNavigateToSuccess}
-                className="text-right hidden md:block cursor-pointer group"
-                title="Ver Jornada de Sucesso"
-              >
-                 <p className="text-xs text-gray-500 uppercase font-bold group-hover:text-hlx-gold transition-colors">Health Score (Saúde)</p>
-                 <div className="w-32 bg-slate-800 h-2 rounded-full mt-1 overflow-hidden">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-400 h-full w-[85%]"></div>
-                 </div>
-                 <p className="text-[10px] text-green-400 text-right mt-0.5 font-mono group-hover:underline">850/1000 pts</p>
-              </div>
-              <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-white/10 relative shadow-lg shadow-cyan-500/10">
-                 <Bell size={20} className="text-gray-400" />
-                 <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse"></span>
-              </div>
-           </div>
-        </div>
-        
-        {/* NAVEGAÇÃO ABAS (Scrollable mobile) */}
-        <div className="flex overflow-x-auto pb-4 gap-2 mb-6 custom-scrollbar">
-           {[
-             { id: 'audit_center', label: 'Central de Auditoria', icon: ShieldCheck },
-             { id: 'risk_monitor', label: 'Torre de Controle', icon: Target }, // Alterado de Radar para Target para segurança
-             { id: 'quality', label: 'Gestão da Qualidade', icon: CheckSquare },
-             { id: 'integrations', label: 'Integrações (API)', icon: Cable },
-             { id: 'rhtec', label: 'RhTec & Motoristas', icon: HeartHandshake },
-             { id: 'finance', label: 'Financeiro', icon: Wallet },
-             { id: 'neuro', label: 'Neuro-Telemetria', icon: BrainCircuit },
-             { id: 'routes', label: 'Rotas e Riscos', icon: Map },
-             { id: 'wealth', label: 'Valuation', icon: TrendingUp },
-           ].map(tab => (
-             <button
+    <div className="min-h-screen bg-[#0B1120] flex flex-col md:flex-row text-slate-100 font-sans">
+      
+      {/* SIDEBAR TÁTICA - LARGURA AUMENTADA E ÍCONES GRANDES */}
+      <aside className="w-full md:w-80 bg-[#161f32] border-r border-white/10 flex flex-col z-20 h-screen sticky top-0 overflow-y-auto custom-scrollbar shadow-2xl">
+         <div className="p-6 border-b border-white/10 bg-[#0f1523]">
+            <h2 className="text-white font-display font-bold text-3xl flex items-center gap-3 tracking-wide">
+               <div className="w-10 h-10 bg-gradient-to-br from-hlx-gold to-orange-600 rounded-xl flex items-center justify-center text-slate-900 shadow-lg">
+                  <Landmark size={24} />
+               </div>
+               HELONEX
+            </h2>
+            <div className="mt-6 flex items-center gap-3 px-4 py-3 bg-green-500/10 border border-green-500/30 rounded-xl">
+               <div className="relative">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0 left-0 animate-ping"></div>
+               </div>
+               <div>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Status do Sistema</p>
+                  <p className="text-sm text-green-400 font-mono font-bold">{systemHealth}% ONLINE</p>
+               </div>
+            </div>
+         </div>
+
+         <nav className="flex-1 py-6 px-4 space-y-2">
+            <p className="px-2 text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Principal</p>
+            
+            <button onClick={() => setActiveTab('control_tower')} className={`w-full flex items-center gap-4 px-5 py-4 text-base font-bold rounded-xl transition-all group ${activeTab === 'control_tower' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40 ring-1 ring-blue-400' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>
+               <Activity size={24} className={activeTab === 'control_tower' ? 'text-white' : 'text-gray-500 group-hover:text-white'} />
+               Torre de Controle
+            </button>
+
+            <button onClick={() => setActiveTab('resolve')} className={`w-full flex items-center gap-4 px-5 py-4 text-base font-bold rounded-xl transition-all group ${activeTab === 'resolve' ? 'bg-green-600 text-white shadow-lg shadow-green-900/40 ring-1 ring-green-400' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>
+               <Handshake size={24} className={activeTab === 'resolve' ? 'text-white' : 'text-gray-500 group-hover:text-white'} />
+               Helonex Resolve
+            </button>
+
+            <button onClick={() => setActiveTab('strategy')} className={`w-full flex items-center gap-4 px-5 py-4 text-base font-bold rounded-xl transition-all group ${activeTab === 'strategy' ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40 ring-1 ring-purple-400' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>
+               <Compass size={24} className={activeTab === 'strategy' ? 'text-white' : 'text-gray-500 group-hover:text-white'} />
+               Estratégia
+            </button>
+
+            <p className="px-2 text-xs font-bold text-gray-500 uppercase tracking-widest mt-8 mb-3">Gestão Diária</p>
+            
+            {[
+              { id: 'fleet', label: 'Minha Frota', icon: Truck },
+              { id: 'risk_monitor', label: 'Risco & Jornada', icon: ShieldAlert },
+              { id: 'finance', label: 'Financeiro', icon: Wallet },
+              { id: 'accounting', label: 'Contabilidade S-O-L', icon: DollarSign },
+              { id: 'issuance', label: 'Emitir Documentos', icon: FileText },
+              { id: 'checklist', label: 'Checklist (Vistoria)', icon: ClipboardCheck },
+              { id: 'zmrc', label: 'ZMRC / Rodízio SP', icon: MapPin },
+            ].map(tab => (
+              <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as DashboardTab)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${
+                className={`w-full flex items-center gap-4 px-5 py-4 text-sm font-bold rounded-xl transition-all group ${
                   activeTab === tab.id 
-                    ? 'bg-hlx-gold text-slate-900 shadow-lg shadow-yellow-500/20' 
-                    : 'bg-slate-900 border border-white/10 text-gray-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-slate-800 text-white border border-hlx-gold/50 shadow-md' 
+                    : 'text-gray-300 hover:text-white hover:bg-white/10'
                 }`}
-             >
-                <tab.icon size={16} />
+              >
+                <tab.icon size={20} className={activeTab === tab.id ? 'text-hlx-gold' : 'text-gray-500 group-hover:text-gray-300'} />
                 {tab.label}
-             </button>
-           ))}
-        </div>
+              </button>
+            ))}
 
-        {/* ÁREA DE CONTEÚDO */}
-        <div className="animate-fade-in-up min-h-[500px]">
-           
-           {/* 1. CENTRAL DE AUDITORIA (HOME) */}
-           {activeTab === 'audit_center' && (
-             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Coluna Esquerda: Status Geral */}
-                <div className="lg:col-span-2 space-y-6">
-                   <div className="bg-slate-900 border border-white/10 rounded-xl p-6 relative overflow-hidden">
-                      <div className="absolute top-0 right-0 p-4 opacity-10"><ShieldCheck size={80} /></div>
-                      <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                        <Activity className="text-green-400" /> Saúde da Operação
-                      </h3>
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                         <div className="bg-slate-950 p-3 rounded-lg border border-white/5">
-                            <p className="text-xs text-gray-500 uppercase font-bold">Conformidade</p>
-                            <p className="text-2xl font-bold text-white">98%</p>
-                         </div>
-                         <div className="bg-slate-950 p-3 rounded-lg border border-white/5">
-                            <p className="text-xs text-gray-500 uppercase font-bold">Risco Legal</p>
-                            <p className="text-2xl font-bold text-green-400">Baixo</p>
-                         </div>
-                         <div className="bg-slate-950 p-3 rounded-lg border border-white/5">
-                            <p className="text-xs text-gray-500 uppercase font-bold">Frota Ativa</p>
-                            <p className="text-2xl font-bold text-blue-400">{company.vehicles.length}</p>
-                         </div>
-                      </div>
-                   </div>
+            <p className="px-2 text-xs font-bold text-gray-500 uppercase tracking-widest mt-8 mb-3">Inteligência</p>
+            
+            {[
+                { id: 'analytics', label: 'Relatórios', icon: BarChart4 },
+                { id: 'dou', label: 'Diário Oficial', icon: Newspaper },
+                { id: 'career_tree', label: 'Carreira', icon: Sprout },
+                { id: 'dossier', label: 'Dossiê Técnico', icon: Terminal },
+            ].map(tab => (
+                <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as DashboardTab)}
+                    className={`w-full flex items-center gap-4 px-5 py-4 text-sm font-bold rounded-xl transition-all group ${
+                    activeTab === tab.id 
+                        ? 'bg-slate-800 text-white border border-hlx-gold/50 shadow-md' 
+                        : 'text-gray-300 hover:text-white hover:bg-white/10'
+                    }`}
+                >
+                    <tab.icon size={20} className={activeTab === tab.id ? 'text-hlx-gold' : 'text-gray-500 group-hover:text-gray-300'} />
+                    {tab.label}
+                </button>
+            ))}
+         </nav>
+      </aside>
 
-                   {/* Lista de Alertas */}
-                   <div className="bg-slate-900 border border-white/10 rounded-xl p-6">
-                      <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                        <AlertTriangle className="text-yellow-500" /> Alertas do Guardião
-                      </h3>
-                      <div className="space-y-3">
-                         <div className="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                            <AlertCircle size={18} className="text-red-500 mt-0.5" />
-                            <div>
-                               <p className="text-sm font-bold text-white">RNTRC Vencendo (Placa XYZ-9876)</p>
-                               <p className="text-xs text-gray-400">Faltam 15 dias. Renove agora para evitar multa de R$ 3.000,00.</p>
-                               <button className="mt-2 text-xs bg-red-600 text-white px-3 py-1 rounded font-bold hover:bg-red-500">Resolver</button>
-                            </div>
-                         </div>
-                         <div className="flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                            <Info size={18} className="text-blue-500 mt-0.5" />
-                            <div>
-                               <p className="text-sm font-bold text-white">Oportunidade Tributária</p>
-                               <p className="text-xs text-gray-400">Identificamos R$ 4.500,00 em créditos de PIS/COFINS não aproveitados.</p>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
+      <main className="flex-1 flex flex-col bg-[#0B1120] relative overflow-y-auto custom-scrollbar h-screen">
+        
+        {/* TOP BAR AUMENTADA */}
+        <header className="h-20 border-b border-white/10 flex items-center justify-between px-8 bg-[#161f32]/95 backdrop-blur sticky top-0 z-10 shadow-md">
+           <div className="flex items-center gap-4">
+              <span className="text-gray-400 bg-slate-900 p-2 rounded-lg"><Layers size={24}/></span>
+              <div>
+                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Painel Ativo</span>
+                  <h1 className="text-white font-bold text-xl leading-none uppercase">{activeTab.replace('_', ' ')}</h1>
+              </div>
+           </div>
+
+           <div className="flex items-center gap-6">
+              <button onClick={() => setShowBackupModal(true)} className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg border border-white/10 font-bold text-sm transition-all shadow-md">
+                  <RefreshCcw size={18} />
+                  <span className="hidden md:inline">Backup</span>
+              </button>
+              
+              <div className="flex items-center gap-4 pl-6 border-l border-white/10">
+                 <div className="text-right hidden md:block">
+                    <p className="text-sm font-bold text-white leading-tight">{company.name}</p>
+                    <p className="text-xs text-hlx-gold font-bold">{company.type} • {company.cnpj}</p>
+                 </div>
+                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-hlx-blue to-purple-600 flex items-center justify-center font-bold text-white text-lg shadow-lg border-2 border-white/10">
+                    {company.name.substring(0, 2).toUpperCase()}
+                 </div>
+              </div>
+           </div>
+        </header>
+
+        <div className="p-6 md:p-8 max-w-[1920px] mx-auto w-full">
+           {activeTab === 'control_tower' && (
+             <div className="space-y-8 animate-fade-in-up">
+                
+                {/* 0. IDENTIDADE DIGITAL & SCORE DE REPUTAÇÃO */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3"><CreditCard className="text-hlx-gold" size={28}/> Carteira Digital</h3>
+                        <DigitalIdentityCard company={company} />
+                    </div>
+                    <div>
+                        {/* 1. BOLSA DE FRETES INTELIGENTE (TRADE HUB) */}
+                        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3"><Briefcase className="text-green-400" size={28}/> Trade Hub</h3>
+                        <SmartFreightBoard />
+                    </div>
                 </div>
 
-                {/* Coluna Direita: Selo & Ações */}
-                <div className="space-y-6">
-                   {company.qualitySeal && <GuardianSeal data={company.qualitySeal} />}
-                   
-                   <div className="bg-slate-900 border border-white/10 rounded-xl p-4">
-                      <h4 className="text-gray-400 text-xs font-bold uppercase mb-3">Ações Rápidas</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                         <button className="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-2 transition-colors border border-white/5">
-                            <Truck size={20} className="text-blue-400" /> + Veículo
-                         </button>
-                         <button className="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-2 transition-colors border border-white/5">
-                            <UserPlus size={20} className="text-green-400" /> + Motorista
-                         </button>
-                         <button className="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-2 transition-colors border border-white/5">
-                            <FileText size={20} className="text-yellow-400" /> Emitir CIOT
-                         </button>
-                         <button className="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-2 transition-colors border border-white/5">
-                            <HelpCircle size={20} className="text-purple-400" /> Suporte
-                         </button>
-                      </div>
-                   </div>
+                {/* 2. MESA DE PROCESSOS (LIFE CYCLE HUB) */}
+                <div className="bg-[#161f32] border-2 border-white/10 rounded-2xl p-8 shadow-xl relative overflow-hidden">
+                    <div className="absolute right-0 top-0 p-6 opacity-5"><Layers size={150} /></div>
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-8 relative z-10 gap-4">
+                        <div>
+                            <h3 className="text-2xl font-bold text-white flex items-center gap-3"><ClipboardList className="text-hlx-gold" size={28}/> Minha Mesa de Processos</h3>
+                            <p className="text-gray-400 mt-1">Acompanhe seus pedidos de regularização e cursos.</p>
+                        </div>
+                        <button className="bg-hlx-gold hover:bg-yellow-400 text-slate-900 font-bold px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 transition-all">
+                            <Plus size={20} /> Novo Processo
+                        </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                        {company.activeRequests && company.activeRequests.map(req => (
+                            <div key={req.id} className="bg-slate-900 p-5 rounded-2xl border-2 border-white/10 hover:border-hlx-gold/50 transition-all cursor-pointer group shadow-md hover:shadow-xl hover:-translate-y-1">
+                                <div className="flex justify-between items-start mb-4">
+                                    <span className={`text-xs font-black px-3 py-1.5 rounded-lg border uppercase tracking-wider ${getStatusColor(req.status)}`}>
+                                        {req.status.replace('_', ' ')}
+                                    </span>
+                                    <span className="text-xs text-gray-400 font-bold">{req.lastUpdate}</span>
+                                </div>
+                                <h4 className="text-white font-bold text-lg mb-2 group-hover:text-hlx-gold transition-colors leading-tight">{req.title}</h4>
+                                <p className="text-sm text-gray-300 mb-4">{req.target}</p>
+                                <div className="text-xs text-gray-400 bg-slate-950 p-3 rounded-xl border border-white/5 flex items-center gap-2">
+                                    <Info size={16} className="text-blue-400" /> 
+                                    <span>Etapa: <strong className="text-white">{req.step}</strong></span>
+                                </div>
+                            </div>
+                        ))}
+                        <button className="bg-slate-900/50 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center p-6 text-gray-400 hover:text-white hover:border-white/40 hover:bg-slate-800 transition-all gap-3 min-h-[180px]">
+                            <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center border border-white/10">
+                                <Plus size={32} />
+                            </div>
+                            <span className="text-sm font-bold uppercase tracking-wider">Iniciar Serviço</span>
+                        </button>
+                    </div>
                 </div>
+
+                {/* 3. WIDGETS DE ALTO NÍVEL (KPIs) - Versão Big */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-[#161f32] p-6 rounded-2xl border border-white/10 shadow-lg relative overflow-hidden">
+                        <div className="absolute right-0 top-0 p-4 opacity-5"><Truck size={80}/></div>
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Disponibilidade</p>
+                        <div className="flex items-end gap-3">
+                            <h3 className="text-4xl font-display font-bold text-white">92%</h3>
+                            <span className="text-green-400 text-sm font-bold mb-1 flex items-center bg-green-500/10 px-2 rounded">▲ 4%</span>
+                        </div>
+                        <div className="w-full bg-slate-800 h-3 rounded-full mt-4 overflow-hidden border border-white/5">
+                            <div className="bg-blue-500 h-full w-[92%]"></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-[#161f32] p-6 rounded-2xl border border-white/10 shadow-lg relative overflow-hidden">
+                        <div className="absolute right-0 top-0 p-4 opacity-5"><AlertTriangle size={80}/></div>
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Risco Regulatório</p>
+                        <div className="flex items-end gap-3">
+                            <h3 className="text-4xl font-display font-bold text-white">Baixo</h3>
+                            <span className="text-green-400 text-sm font-bold mb-1 bg-green-500/10 px-2 rounded">98/100</span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-4 font-bold">Nenhuma multa crítica.</p>
+                    </div>
+
+                    <div className="bg-[#161f32] p-6 rounded-2xl border border-white/10 shadow-lg relative overflow-hidden">
+                        <div className="absolute right-0 top-0 p-4 opacity-5"><Wallet size={80}/></div>
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Receita Projetada</p>
+                        <div className="flex items-end gap-3">
+                            <h3 className="text-4xl font-display font-bold text-white">R$ 45k</h3>
+                            <span className="text-green-400 text-sm font-bold mb-1 bg-green-500/10 px-2 rounded">▲ 12%</span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-4 font-bold">Baseado em contratos.</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-hlx-gold/20 to-[#161f32] p-6 rounded-2xl border border-hlx-gold/30 shadow-lg relative overflow-hidden">
+                        <div className="absolute right-0 top-0 p-4 opacity-10"><Gem size={80} className="text-hlx-gold"/></div>
+                        <p className="text-hlx-gold text-xs font-bold uppercase tracking-wider mb-2">Valuation</p>
+                        <div className="flex items-end gap-3">
+                            <h3 className="text-4xl font-display font-bold text-white">Nível A</h3>
+                            <span className="text-slate-900 text-xs font-bold mb-1 bg-hlx-gold px-2 py-0.5 rounded shadow">Ouro</span>
+                        </div>
+                        <p className="text-xs text-gray-300 mt-4 font-bold">Empresa valorizada.</p>
+                    </div>
+                </div>
+
+                <FiscalReformSimulator />
              </div>
            )}
 
-           {/* 2. RISK MONITOR (TORRE DE CONTROLE) */}
-           {activeTab === 'risk_monitor' && <RiskMonitor />}
-
-           {/* 3. RHTEC (DRIVER RECOGNITION) */}
-           {activeTab === 'rhtec' && <DriverRecognitionModule segment={company.profileSegment} />}
-
-           {/* 4. FINANCEIRO */}
+           {activeTab === 'resolve' && <HelonexResolve />}
+           {activeTab === 'strategy' && <StrategicDecisionModule />}
+           {activeTab === 'career_tree' && <CareerTreeModule />}
+           {activeTab === 'zmrc' && <ZmrcManager />}
+           {activeTab === 'biz_builder' && <BizBuilder />}
+           {activeTab === 'fleet' && <FleetManager />}
            {activeTab === 'finance' && <FinancialModule />}
-
-           {/* 5. NEURO TELEMETRIA */}
-           {activeTab === 'neuro' && <NeuroTelemetry />}
-
-           {/* 6. INTEGRAÇÕES */}
-           {activeTab === 'integrations' && <IntegrationsHub />}
-
-           {/* 7. VALUATION (WEALTH) */}
-           {activeTab === 'wealth' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                 <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-hlx-gold/30 rounded-2xl p-8 flex flex-col justify-center items-center text-center shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-hlx-gold via-orange-500 to-hlx-gold"></div>
-                    <Gem size={64} className="text-hlx-gold mb-6 animate-pulse" />
-                    <h2 className="text-3xl font-display font-bold text-white mb-4">
-                       Quanto vale sua empresa hoje?
-                    </h2>
-                    <p className="text-gray-300 mb-8 max-w-md">
-                       Descubra o valor real do seu negócio (Valuation) considerando ativos tangíveis (frota) e intangíveis (marca, processos e equipe).
-                    </p>
-                    <button 
-                       onClick={handleStartValuation}
-                       className="px-8 py-4 bg-hlx-gold hover:bg-yellow-400 text-slate-900 font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-1 flex items-center gap-2"
-                    >
-                       <Calculator size={20} />
-                       INICIAR DIAGNÓSTICO PATRIMONIAL
-                    </button>
-                 </div>
-                 
-                 <div className="bg-slate-900 border border-white/10 rounded-2xl p-8">
-                    <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                       <TrendingUp className="text-green-400" /> Evolução Patrimonial
-                    </h3>
-                    <div className="h-64 flex items-center justify-center text-gray-500 border-2 border-dashed border-slate-700 rounded-xl bg-slate-950/50">
-                       {company.valuationDiagnostic ? (
-                          <div className="text-center">
-                             <p className="text-sm">Última Avaliação: {new Date(company.valuationDiagnostic.date).toLocaleDateString()}</p>
-                             <p className="text-2xl font-bold text-white mt-2">R$ {(company.valuationDiagnostic.score.tangibleValue + company.valuationDiagnostic.score.intangibleValue).toLocaleString()}</p>
-                             <p className="text-xs text-green-400 mt-1">Rating: {company.valuationDiagnostic.score.rating}</p>
-                          </div>
-                       ) : (
-                          <p>Nenhuma avaliação realizada ainda.</p>
-                       )}
-                    </div>
-                 </div>
-              </div>
-           )}
-
-           {/* 8. QUALIDADE (QMS) */}
+           {activeTab === 'accounting' && <FinanceManager />}
+           {activeTab === 'issuance' && <IssuanceModule />}
+           {activeTab === 'checklist' && <ChecklistModule />}
+           {activeTab === 'risk_monitor' && <RiskMonitor />}
            {activeTab === 'quality' && <QualityManagement />}
-
-           {/* 9. ROTAS (MAPA) */}
-           {activeTab === 'routes' && <RoutesMap 
-              routes={[
-                 { id: 'rt1', name: 'Rota da Soja (MT-PR)', originId: 'SINOP', destinationId: 'PARANAGUA', riskScore: 85, status: 'WARNING', pointsOfInterest: ['CUIABA', 'LONDRINA'] },
-                 { id: 'rt2', name: 'Expresso Sudeste', originId: 'SP', destinationId: 'RJ', riskScore: 40, status: 'OK', pointsOfInterest: ['SJC'] }
-              ]} 
-              points={[
-                 { id: 'SINOP', label: 'Sinop', x: 25, y: 35, type: 'HUB', riskLevel: 'LOW' },
-                 { id: 'CUIABA', label: 'Cuiabá', x: 30, y: 45, type: 'WEIGH_STATION', riskLevel: 'MEDIUM' },
-                 { id: 'LONDRINA', label: 'Londrina', x: 45, y: 70, type: 'RISK_ZONE', riskLevel: 'HIGH' },
-                 { id: 'PARANAGUA', label: 'Paranaguá', x: 50, y: 80, type: 'HUB', riskLevel: 'LOW' },
-                 { id: 'SP', label: 'São Paulo', x: 60, y: 75, type: 'HUB', riskLevel: 'LOW' },
-                 { id: 'RJ', label: 'Rio de Janeiro', x: 70, y: 70, type: 'RISK_ZONE', riskLevel: 'CRITICAL', details: 'Alto índice de roubo de carga na Baixada.' },
-                 { id: 'SJC', label: 'S. José dos Campos', x: 65, y: 72, type: 'WEIGH_STATION', riskLevel: 'LOW' }
-              ]}
-           />}
-
+           {activeTab === 'routes' && <RoutesMap routes={[]} points={[]} />}
+           {activeTab === 'analytics' && <AnalyticsHub />}
+           {activeTab === 'api_docs' && <ApiDocs />}
+           {activeTab === 'critical' && <CriticalMissions />}
+           {activeTab === 'dou' && <DOUIntelligence />}
+           {activeTab === 'dossier' && <ImplementationDossier />}
         </div>
+      </main>
 
-      </div>
-
-      {showValuationModal && (
-         <PatrimonialDiagnostic 
-            onClose={() => setShowValuationModal(false)}
-            onComplete={() => {
-                setShowValuationModal(false);
-                refreshData();
-            }}
-         />
-      )}
+      {showBackupModal && <BackupManager onClose={() => setShowBackupModal(false)} />}
     </div>
   );
 };

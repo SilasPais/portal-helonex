@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldAlert, Radio, AlertTriangle, Lock, Unlock, MapPin, 
   Navigation, Crosshair, Siren, PhoneCall, CheckCircle, Activity, 
-  AlertOctagon, Wifi, Thermometer, Truck, X
+  AlertOctagon, Wifi, Thermometer, Truck, X, Clock, Scale, Timer, Coffee
 } from 'lucide-react';
 import { RiskEvent } from '../types';
 
@@ -11,40 +11,54 @@ const RiskMonitor: React.FC = () => {
   const [threatLevel, setThreatLevel] = useState<'LOW' | 'ELEVATED' | 'HIGH' | 'SEVERE'>('LOW');
   const [events, setEvents] = useState<RiskEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<RiskEvent | null>(null);
+  
+  // States para Lei do Caminhoneiro
+  const [drivingTime, setDrivingTime] = useState(270); // 4h30m (em minutos)
+  const [dailyRest, setDailyRest] = useState(0); // minutos
+  const maxDrivingTime = 330; // 5h30m (Lei 13.103)
 
   useEffect(() => {
+    // MOCK DE EVENTOS OPERACIONAIS REAIS
     const mockEvents: RiskEvent[] = [
       {
-        id: 'evt-001',
-        type: 'JAMMING',
-        severity: 'CRITICAL',
-        vehicleId: 'V-102',
+        id: 'evt-rest',
+        type: 'ROUTE_DEVIATION', // Usando um tipo compatível existente, mas a descrição explicará
+        severity: 'HIGH',
+        vehicleId: 'V-200',
         plate: 'ABC-1234',
         driverName: 'João Silva',
-        location: 'BR-116, Km 200 (Área de Sombra)',
+        location: 'BR-116, Km 300',
         timestamp: new Date(),
-        status: 'ACTIVE'
+        status: 'ACTIVE',
       },
       {
-        id: 'evt-002',
-        type: 'ROUTE_DEVIATION',
-        severity: 'HIGH',
-        vehicleId: 'V-055',
-        plate: 'XYZ-9876',
-        driverName: 'Carlos Mendes',
-        location: 'Acesso Não Autorizado - Vila Maria',
-        timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 min atrás
+        id: 'evt-weight',
+        type: 'THEFT', // Placeholder para infração grave
+        severity: 'CRITICAL',
+        vehicleId: 'V-305',
+        plate: 'XYZ-9988',
+        driverName: 'Marcos Dias',
+        location: 'Posto Fiscal PR',
+        timestamp: new Date(Date.now() - 1000 * 60 * 10), 
         status: 'INVESTIGATING'
       }
     ];
     setEvents(mockEvents);
     setThreatLevel('HIGH');
 
+    // Simulação de eventos chegando
     const interval = setInterval(() => {
+      // Simulação do relógio de jornada
+      setDrivingTime(prev => {
+          if (prev >= maxDrivingTime) return prev; // Limite
+          return prev + 1;
+      });
+
       if (Math.random() > 0.7) {
+        const types: any[] = ['STOP', 'DOOR_OPEN', 'ACCIDENT'];
         const newEvent: RiskEvent = {
           id: `evt-${Date.now()}`,
-          type: Math.random() > 0.5 ? 'STOP' : 'DOOR_OPEN',
+          type: types[Math.floor(Math.random() * types.length)],
           severity: 'MEDIUM',
           vehicleId: `V-${Math.floor(Math.random() * 100)}`,
           plate: 'NEW-0000',
@@ -55,19 +69,29 @@ const RiskMonitor: React.FC = () => {
         };
         setEvents(prev => [newEvent, ...prev].slice(0, 10));
       }
-    }, 8000);
+    }, 10000); // 10 segundos na vida real = 1 minuto no simulador para ver a barra mexer devagar
 
     return () => clearInterval(interval);
   }, []);
 
-  const getEventIcon = (type: string) => {
+  const getEventIcon = (type: string, id: string) => {
+    // Hack visual para mostrar ícones específicos baseado no ID simulado
+    if (id === 'evt-rest') return <Clock size={18} />;
+    if (id === 'evt-weight') return <Scale size={18} />;
+
     switch (type) {
-      case 'THEFT': return <AlertOctagon size={18} />; // Trocado Skull por AlertOctagon (Safe)
-      case 'JAMMING': return <Wifi size={18} />; // Trocado WifiOff por Wifi (Safe)
+      case 'THEFT': return <AlertOctagon size={18} />; 
+      case 'JAMMING': return <Wifi size={18} />; 
       case 'ACCIDENT': return <Siren size={18} />;
       case 'DOOR_OPEN': return <Unlock size={18} />;
       default: return <AlertTriangle size={18} />;
     }
+  };
+
+  const getEventLabel = (type: string, id: string) => {
+      if (id === 'evt-rest') return 'LEI DO DESCANSO';
+      if (id === 'evt-weight') return 'EVASÃO BALANÇA';
+      return type.replace('_', ' ');
   };
 
   const getSeverityColor = (severity: string) => {
@@ -83,6 +107,13 @@ const RiskMonitor: React.FC = () => {
     alert(`Comando Enviado ao Veículo: ${action}\nProtocolo: CMD-${Date.now()}`);
   };
 
+  // Helper para formatar minutos em HH:MM
+  const formatMinutes = (mins: number) => {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${h}h ${m < 10 ? '0' : ''}${m}m`;
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 p-4 md:p-8 animate-fade-in-up">
       
@@ -90,12 +121,12 @@ const RiskMonitor: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-white/10 pb-6 gap-6">
         <div>
           <div className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-widest mb-2 animate-pulse">
-             <Radio size={14} /> Monitoramento Ativo
+             <Radio size={14} /> Torre de Controle 24h
           </div>
           <h1 className="text-3xl font-display font-bold text-white flex items-center gap-2">
-            Torre de Controle <span className="text-red-500">24h</span>
+            Monitoramento de Risco
           </h1>
-          <p className="text-gray-400 text-sm">Gerenciamento de Crise e Pronta Resposta.</p>
+          <p className="text-gray-400 text-sm">Fiscalização ativa de Jornada (Lei 13.103) e Risco Patrimonial.</p>
         </div>
 
         {/* DEFCON INDICATOR */}
@@ -106,7 +137,7 @@ const RiskMonitor: React.FC = () => {
                threatLevel === 'SEVERE' ? 'text-red-600 animate-pulse' : 
                threatLevel === 'HIGH' ? 'text-orange-500' : 'text-green-500'
              }`}>
-               DEFCON {threatLevel === 'SEVERE' ? '1' : threatLevel === 'HIGH' ? '2' : '3'}
+               {threatLevel === 'SEVERE' ? 'CRÍTICO' : threatLevel === 'HIGH' ? 'ALERTA' : 'NORMAL'}
              </p>
            </div>
            <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center ${
@@ -141,7 +172,7 @@ const RiskMonitor: React.FC = () => {
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className={`flex items-center gap-2 px-2 py-1 rounded text-[10px] font-bold uppercase border ${getSeverityColor(event.severity)}`}>
-                    {getEventIcon(event.type)} {event.type.replace('_', ' ')}
+                    {getEventIcon(event.type, event.id)} {getEventLabel(event.type, event.id)}
                   </div>
                   <span className="text-[10px] text-gray-500 font-mono">{event.timestamp.toLocaleTimeString()}</span>
                 </div>
@@ -149,6 +180,17 @@ const RiskMonitor: React.FC = () => {
                 <p className="text-xs text-gray-400 flex items-center gap-1">
                   <MapPin size={10} /> {event.location}
                 </p>
+                {/* Detalhe extra para eventos específicos */}
+                {event.id === 'evt-rest' && (
+                    <p className="text-[10px] text-orange-400 mt-2 bg-orange-500/10 p-1 rounded border border-orange-500/20">
+                        ⚠️ Dirigindo há 5h40 sem pausa. Infração iminente.
+                    </p>
+                )}
+                {event.id === 'evt-weight' && (
+                    <p className="text-[10px] text-red-400 mt-2 bg-red-500/10 p-1 rounded border border-red-500/20">
+                        🚨 Veículo desviou rota da balança obrigatória.
+                    </p>
+                )}
               </div>
             ))}
           </div>
@@ -157,6 +199,49 @@ const RiskMonitor: React.FC = () => {
         {/* COLUNA 2 & 3: MAPA TÁTICO E AÇÕES */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           
+          {/* WIDGET LEI DO CAMINHONEIRO (NOVO) */}
+          {selectedEvent && (
+              <div className="bg-slate-900 border border-white/10 rounded-xl p-4 flex gap-6 items-center">
+                  <div className="flex-1">
+                      <div className="flex justify-between items-end mb-2">
+                          <h4 className="text-white font-bold flex items-center gap-2">
+                              <Timer size={18} className="text-hlx-gold" /> Jornada Ativa (Lei 13.103)
+                          </h4>
+                          <span className={`text-xs font-bold ${drivingTime > 300 ? 'text-red-500 animate-pulse' : 'text-green-400'}`}>
+                              {drivingTime > 300 ? 'LIMITE EXCEDIDO' : 'DENTRO DO LIMITE'}
+                          </span>
+                      </div>
+                      
+                      <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden mb-1 relative">
+                          {/* Marca de 5h30m */}
+                          <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-red-500 z-10" title="Limite 5h30"></div>
+                          <div 
+                              className={`h-full transition-all duration-1000 ${drivingTime > 300 ? 'bg-red-500' : 'bg-green-500'}`} 
+                              style={{ width: `${(drivingTime / maxDrivingTime) * 100}%` }}
+                          ></div>
+                      </div>
+                      <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                          <span>0h</span>
+                          <span>{formatMinutes(drivingTime)} dirigindo</span>
+                          <span>Limite: 5h30m</span>
+                      </div>
+                  </div>
+
+                  <div className="w-px h-12 bg-white/10"></div>
+
+                  <div className="flex items-center gap-4">
+                      <div className="text-center">
+                          <Coffee className="text-blue-400 mx-auto mb-1" size={20} />
+                          <p className="text-[10px] text-gray-400 uppercase font-bold">Descanso</p>
+                          <p className="text-white font-bold text-lg">0h 30m</p>
+                      </div>
+                      <button className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-4 rounded transition-colors">
+                          Registrar Parada
+                      </button>
+                  </div>
+              </div>
+          )}
+
           {/* MAPA RADAR (MOCK VISUAL) */}
           <div className="flex-1 bg-black rounded-xl border border-white/10 relative overflow-hidden group min-h-[350px]">
              {/* Grid Radar Effect */}
@@ -215,12 +300,12 @@ const RiskMonitor: React.FC = () => {
                 </button>
 
                 <button 
-                  onClick={() => handleAction('ACIONAR SIRENE')}
+                  onClick={() => handleAction('ALERTAR MOTORISTA')}
                   disabled={!selectedEvent}
                   className="p-4 bg-slate-800 border border-white/10 rounded-xl flex flex-col items-center gap-2 hover:bg-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Siren size={24} className="text-yellow-400" />
-                  <span className="text-xs font-bold text-white">Disparar Sirene</span>
+                  <span className="text-xs font-bold text-white">Alerta Sonoro (Cabine)</span>
                 </button>
 
                 <button 
@@ -238,7 +323,7 @@ const RiskMonitor: React.FC = () => {
                   className="p-4 bg-slate-800 border border-white/10 rounded-xl flex flex-col items-center gap-2 hover:bg-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <CheckCircle size={24} className="text-green-400" />
-                  <span className="text-xs font-bold text-white">Checklist Remoto</span>
+                  <span className="text-xs font-bold text-white">Auditoria Remota</span>
                 </button>
              </div>
           </div>

@@ -1,10 +1,11 @@
 
 import React from 'react';
 
-// --- ENUMS ---
+export const AETC_PRICE_PER_PLATE = 480.00;
 
 export enum Section {
   HOME = 'HOME',
+  MANIFESTO = 'MANIFESTO', 
   SERVICES = 'SERVICES',
   ACADEMY = 'ACADEMY',
   NEWS_BOARD = 'NEWS_BOARD',
@@ -24,70 +25,178 @@ export enum Section {
   OPPORTUNITY = 'OPPORTUNITY',
   UNDER_CONSTRUCTION = 'UNDER_CONSTRUCTION',
   STRATEGIC_ROADMAP = 'STRATEGIC_ROADMAP',
-  SUCCESS_ROUTE = 'SUCCESS_ROUTE'
+  SUCCESS_ROUTE = 'SUCCESS_ROUTE',
+  FREIGHT_CALCULATOR = 'FREIGHT_CALCULATOR',
+  BIZ_BUILDER = 'BIZ_BUILDER',
+  API_DOCS = 'API_DOCS',
+  CRITICAL_MISSIONS = 'CRITICAL_MISSIONS',
+  HSM_VAULT = 'HSM_VAULT',
+  STRATEGIC_DECISION = 'STRATEGIC_DECISION',
+  HELONEX_RESOLVE = 'HELONEX_RESOLVE',
+  DOSSIER = 'DOSSIER',
+  ZMRC_CATALOG = 'ZMRC_CATALOG',
+  GOV_TECH = 'GOV_TECH',
+  JUS_TECH = 'JUS_TECH',
+  EDU_TECH = 'EDU_TECH',
+  GES_TECH = 'GES_TECH',
+  HELONEX_VISION = 'HELONEX_VISION',
+  ONBOARDING = 'ONBOARDING',
+  FINANCE_MANAGER = 'FINANCE_MANAGER'
 }
 
-export enum MaturityLevel {
-  GENESE = 0,
-  LEGALIZADO = 1,
-  EFICIENTE = 2,
-  QUALIFICADO = 3,
-  CONSOLIDADO = 4,
-  EXPONENCIAL = 5
-}
-
-// --- TYPES & ALIASES ---
-
-export type Language = 'pt' | 'es';
-export type UserRole = 'visitor' | 'subscriber' | 'admin' | 'partner' | 'shipper';
-export type ProfileSegment = 'CARGO_PROVIDER' | 'PASSENGER_PROVIDER' | 'SHIPPER' | 'OWN_CARGO';
-export type DocStatus = 'VALID' | 'EXPIRING' | 'EXPIRED' | 'PENDING';
-export type ProcedureType = 'POP' | 'PAP';
-export type ProcedureScope = 'INTERNAL' | 'CLIENT' | 'PUBLIC';
-export type PartnerCategory = 'Combustivel' | 'Seguros' | 'Manutencao' | 'Financeiro' | 'Outros';
-export type CargoType = string;
-export type PaymentMethod = 'credit_card' | 'pix' | 'boleto';
-
-// --- INTERFACES ---
-
-export interface ServiceCardProps {
+export interface VisionAnalysis {
   id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  category: string;
+  timestamp: string;
+  scenario: string;
+  detectedIssue: string;
+  normativeReference: string; // ex: SASSMAQ 4.2.1
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  suggestedAction: string;
+  trainingModuleId?: string;
+  status: 'OPEN' | 'RESOLVED' | 'IGNORED';
+  imageUrl?: string;
 }
 
-export interface StatData {
+export type AetcStatus = 
+  | 'AGUARDANDO_DOCS'
+  | 'ANALISE_TECNICA'
+  | 'AGUARDANDO_ASSINATURA'
+  | 'PROCESSAMENTO_FISICO'
+  | 'POSTADO_CORREIOS'
+  | 'ANALISE_CET'
+  | 'DEFERIDO'
+  | 'INDEFERIDO'
+  | 'EXPIRADO';
+
+export interface AetcDocument {
   name: string;
-  compliance: number;
-  risk: number;
+  url?: string;
+  status: 'PENDING' | 'UPLOADED' | 'VALIDATED' | 'REJECTED';
 }
 
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-  timestamp: Date;
+export interface AetcRequest {
+  id: string;
+  clientName: string;
+  plate: string;
+  modalityId: string;
+  status: AetcStatus;
+  createdAt: string;
+  updatedAt: string;
+  expiryDate?: string;
+  documents: AetcDocument[];
+  requirementUrl?: string;
+  trackingCode?: string;
+  prefeituraProtocol?: string;
+  financeStatus: 'PENDING' | 'PAID';
 }
 
-export interface SentinelAnalysis {
-  nivel_estresse: number;
-  nivel_fadiga: number;
-  alerta_preventivo: string;
-  acao_gestor: string;
-  fundamentacao_legal: string;
+export type RestrictionZone = 'ZMRC' | 'ZERC' | 'VER_1' | 'VER_2' | 'VER_3' | 'VER_4';
+export type UserRole = 'visitor' | 'admin' | 'subscriber' | 'partner' | 'shipper';
+export type Language = 'pt' | 'es';
+
+export interface CompanyProfile {
+  id: string;
+  name: string;
+  cnpj: string;
+  type: string;
+  iqtScore: number;
+  activeRequests: any[];
+  reputation?: any;
+  vehicles: Vehicle[];
+  drivers?: Driver[];
+  inventory?: InventoryItem[];
+  privacySettings?: PrivacySettings;
 }
 
-export interface DriverRecognitionModuleProps {
-  segment?: ProfileSegment;
+export interface TaxDocument { 
+  id: string; 
+  type: string; 
+  number: string; 
+  series: string; 
+  issueDate: string; 
+  value: number; 
+  recipientName: string; 
+  status: string; 
+  accessKey?: string;
+  xmlUrl?: string;
+  pdfUrl?: string;
+  ciotProtocol?: string;
+  rejectionReason?: string;
 }
 
-export interface QualitySealData {
-  level: MaturityLevel;
-  levelName: string;
-  score: number;
-  hash: string;
-  validUntil: string;
+export interface Vehicle { 
+  id: string; 
+  plate: string; 
+  model: string; 
+  year: number; 
+  type: string;
+  rntrcStatus?: string;
+  insuranceStatus?: string;
+  currentValue?: number;
+  odometer?: number;
+  licenses?: License[];
+  tires?: TireRecord[];
+  maintenanceHistory?: MaintenanceRecord[];
+}
+
+export interface Driver { id: string; name: string; cnh: string; cnhCategory: string; cnhExpiry: string; photoUrl: string; }
+export interface NewsItem { id: string; title: string; summary: string; category: string; date: string; tags: string[]; imageUrl?: string; }
+export interface ClassifiedAd { id: string; type: string; title: string; price?: number; description: string; location: string; contact: string; sellerName: string; sellerLevel: string; date: string; verified: boolean; imageUrl?: string; }
+export interface MarketplaceOffer { id: string; title: string; description: string; publicPrice: number; memberPrice: number; category: string; targetRules: any; }
+export interface StrategicAnalysis { decisionTitle: string; legalBasis: string; risks: string[]; opportunities: string[]; errorSimulation: string; correctiveActions: string[]; popContent: any; }
+export interface GeneratedCourse { id: string; title: string; description: string; modules: any[]; }
+export interface TaxSimulation { currentPisCofins: number; currentIcms: number; newCbs: number; newIbs: number; creditDiesel: number; creditTires: number; netImpact: number; }
+export interface FreightCost { diesel: number; toll: number; maintenance: number; tires: number; driverStipend: number; adminOverhead: number; taxes: number; profitMargin: number; totalCost: number; suggestedPrice: number; minAnttPrice: number; isSustainable: boolean; }
+export interface ChatMessage { role: 'user' | 'model'; text: string; timestamp: Date; }
+export interface FatigueAnalysis { nivel_estresse: number; alerta_preventivo: string; acao_gestor: string; }
+export interface DOUNews { id: string; agency: string; title: string; impact: string; summary: string; link: string; }
+export interface FreightOffer { id: string; origin: string; destination: string; cargoType: string; vehicleTypeRequired: string; price: number; distance: number; shipperName: string; minScoreRequired: number; matchReason?: string; }
+export interface SentinelAnalysis { score: number; isHostile: boolean; reason?: string; suggestion?: string; }
+export interface Proposal { id: string; value: number; }
+export interface Dispute { id: string; protocol: string; }
+export interface StatData { name: string; compliance: number; risk: number; }
+export interface Enrollment { id: string; studentName: string; courseName: string; status: string; }
+export type Monitriip4Status = 'GREEN' | 'YELLOW' | 'RED';
+export const SAC_OMISSION_FINE = 5813.00;
+export interface ServiceRequest { id: string; title: string; target: string; status: string; lastUpdate: string; step: string; }
+export interface BSCIndicator { id: string; name: string; perspective: string; target: number; actual: number; unit: string; trend: 'up' | 'down' | 'stable'; owner: string; linkedTo: string[]; }
+export interface NonConformity { id: string; code: string; title: string; origin: string; severity: string; status: string; description: string; identifiedBy: string; dateOpen: string; rootCauseAnalysis?: any; }
+export interface QualityMultiplier { id: string; name: string; role: string; points: number; badges: string[]; }
+export interface ActionPlan5W2H { id: string; title: string; }
+export interface TransportRoute { id: string; name: string; originId: string; destinationId: string; status: string; riskScore: number; pointsOfInterest: string[]; currentVehiclePosition?: any; deviationAlert?: boolean; }
+export interface GeoPoint { id: string; x: number; y: number; label: string; type: string; riskLevel: string; details?: string; }
+export interface SafeStop { id: string; x: number; y: number; name: string; type: string; insuranceApproved: boolean; }
+export type ProfileSegment = 'CARGO_PROVIDER' | 'PASSENGER_PROVIDER' | 'SHIPPER' | 'OWN_CARGO';
+export enum MaturityLevel { LEVEL_01_BASIC = 1, LEVEL_02_SILVER = 2, LEVEL_03_GOLD_ESG = 3, LEVEL_04_GUARDIAN = 4, EXPONENCIAL = 'EXPONENCIAL', CONSOLIDADO = 'CONSOLIDADO', QUALIFICADO = 'QUALIFICADO' }
+export interface QualitySealData { level: MaturityLevel; levelName: string; score: number; hash: string; }
+export interface VerifiedProvider { id: string; name: string; segment: string; sealLevel: string; location: string; fleetSize: number; rating: number; verified: boolean; trustScore?: number; pricePerKm?: number; matchesDemand?: boolean; }
+export interface FreightDemand { type: 'CARGO' | 'PASSENGER'; origin?: string; destiny?: string; }
+export type FinanceCategory = string;
+export type FinanceStatus = string;
+export interface FinancialRecord { id: string; date: string; dueDate: string; description: string; type: 'RECEITA' | 'DESPESA'; category: FinanceCategory; value: number; status: FinanceStatus; costCenter: string; documentNumber?: string; }
+export interface TaxOpportunity { id: string; routeId: string; recommendedState: string; currentStopState: string; icmsDifference: number; estimatedSavings: number; fuelStationPartner: string; }
+export interface RiskEvent { id: string; type: string; severity: string; vehicleId: string; plate: string; driverName: string; location: string; timestamp: Date; status: string; }
+export interface ChecklistItem { id: string; category: string; label: string; status: 'OK' | 'NOK' | 'NA'; severityIfFailed: string; observation?: string; photoEvidence?: string; }
+export interface DocumentationDoc { id: string; title: string; subtitle: string; category: string; tags: string[]; sections: any[]; }
+export type TaxDocType = 'CT-e' | 'MDF-e' | 'CIOT' | 'NF-e';
+export interface CteForm { senderName: string; senderCnpj: string; recipientName: string; recipientCnpj: string; originCity: string; originUF: string; destCity: string; destUF: string; productName: string; productValue: number; cargoWeight: number; freightValue: number; tributation: string; nfeKeys: string; }
+export interface MdfeForm { vehiclePlate: string; driverCpf: string; driverName: string; ufOrigin: string; ufDestiny: string[]; cteKeys: string; insurancePolicy: string; }
+export interface CiotForm { rntrc: string; contractorCnpj: string; driverCpf: string; freightValue: number; paymentMethod: string; destCity: string; destUF: string; contractType: 'TAC' | 'ETC' | 'MEI_CAMINHONEIRO' | 'PROPRIO' | 'OUTROS'; }
+export const PRF_OVERSIZED_RATE = 16.07;
+export type AetcModality = any;
+
+export type MacroSegment = 'CARGO' | 'PASSENGER' | 'CORPORATE';
+export type UserPersona = 'TAC' | 'ETC' | 'TRIC' | 'SHIPPER' | 'OWN_CARGO_AGRO' | 'OWN_CARGO_IND' | 'PASS_CHARTER_EVENTUAL' | 'PASS_CHARTER_CONT' | 'PASS_SCHOOL' | 'PASS_LINE' | 'STUDENT' | 'FLEET_MANAGER' | 'TECH_RESP' | 'HR_TRANSPORT';
+export type UserGoal = 'LEGALIZE' | 'MANAGE' | 'GROW' | 'LEARN';
+export type SystemMode = 'FULL_MANAGEMENT' | 'INTELLIGENCE_LAYER';
+
+export interface UserContext {
+  macro: MacroSegment;
+  persona: UserPersona;
+  goal: UserGoal;
+  mode: SystemMode;
+  needsOnboarding: boolean;
+  maturityLevel?: MaturityLevel;
 }
 
 export interface PrivacySettings {
@@ -98,303 +207,42 @@ export interface PrivacySettings {
   lastUpdated: string;
 }
 
-export interface Document {
+export interface DigitalCertificate {
   id: string;
-  type: string;
-  number: string;
+  fileName: string;
   expiryDate: string;
-  status: DocStatus;
+  status: 'VALID' | 'EXPIRED' | 'REVOKED';
 }
 
-export interface NeuroStatus {
-  status: 'FOCUS' | 'FATIGUE' | 'DISTRACTED';
-  attentionLevel: number;
-  stressLevel: number;
-  heartRate: number;
-  lastBlinkRate: number;
-}
+export interface MaintenanceRecord { id: string; date: string; type: string; description: string; cost: number; }
+export interface TireRecord { id: string; position: string; brand: string; model: string; treadDepth: number; pressure: number; }
+export interface InventoryItem { id: string; name: string; quantity: number; }
+export interface License { id: string; type: string; name: string; status: string; expiryDate: string; }
 
-export interface Driver {
+// Helonex Core Engine Types
+export type Zone = 'GREEN' | 'YELLOW' | 'RED';
+
+export interface Metric {
   id: string;
   name: string;
-  cnh: string;
-  cnhCategory: string;
-  cnhExpiry: string;
-  mopp: boolean;
-  toxicologyStatus: DocStatus;
-  photoUrl?: string;
-  neuroStatus?: NeuroStatus;
-  // Extras for Gamification
-  tier?: string;
-  score?: number;
-  economy?: number;
-  bonus?: number;
-  img?: string;
-  isCompany?: boolean;
-}
-
-export interface Vehicle {
-  id: string;
-  plate: string;
-  model: string;
-  year: number;
-  type: 'TRUCK' | 'BUS' | 'VAN' | 'UTILITY';
-  rntrcStatus: DocStatus;
-  insuranceStatus: DocStatus;
-}
-
-export interface BSCIndicator {
-  id: string;
-  name: string;
-  perspective: 'Financeira' | 'Clientes' | 'Processos Internos' | 'Aprendizado e Crescimento';
-  target: number;
-  actual: number;
+  module: 'GOV' | 'JUS' | 'EDU' | 'GES';
+  value: number;
   unit: string;
-  trend: 'up' | 'down' | 'stable';
-  owner: string;
-  linkedTo: string[];
+  timestamp: number;
 }
 
-export interface NonConformity {
-  id: string;
-  code: string;
-  title: string;
-  origin: 'Indicador' | 'Auditoria' | 'Reclamacao' | 'Monitriip';
-  severity: 'Baixa' | 'Media' | 'Alta' | 'Critica';
-  status: 'Aberta' | 'Em Analise' | 'Fechada';
-  description: string;
-  identifiedBy: string;
-  dateOpen: string;
-  rootCauseAnalysis?: {
-    details: string;
-  };
-}
-
-export interface QualityMultiplier {
+export interface ProcessStats {
   id: string;
   name: string;
-  role: string;
-  points: number;
-  badges: string[];
+  mean: number; // mu
+  stdDev: number; // sigma
+  history: Metric[];
 }
 
-export interface ValuationDiagnostic {
-  id: string;
-  date: string;
-  answers: any;
-  score: {
-    tangibleValue: number;
-    intangibleValue: number;
-    potentialGrowth: number;
-    rating: string;
-  };
-  status: 'completed' | 'pending';
+export interface AnalysisResult {
+  metricId: string;
+  zScore: number;
+  zone: Zone;
+  actionRequired: boolean;
+  suggestedAction?: string;
 }
-
-export interface CompanyProfile {
-  id: string;
-  name: string;
-  cnpj: string;
-  email: string;
-  phone: string;
-  address: string;
-  type: string;
-  profileSegment: ProfileSegment;
-  operationMode: string;
-  state: string;
-  documents: Document[];
-  vehicles: Vehicle[];
-  drivers: Driver[];
-  iqtScore: number;
-  iqtHistory: { date: string; score: number }[];
-  maturityLevel: MaturityLevel;
-  qualitySeal?: QualitySealData;
-  activeModules: string[];
-  privacySettings?: PrivacySettings;
-  bsc?: BSCIndicator[];
-  nonConformities?: NonConformity[];
-  qualityMultipliers?: QualityMultiplier[];
-  valuationDiagnostic?: ValuationDiagnostic;
-}
-
-export interface GuardianAlert {
-  id: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  title: string;
-  message: string;
-  date: string;
-  actionUrl?: string;
-}
-
-export interface MarketplaceOffer {
-  id: string;
-  title: string;
-  description: string;
-  category: PartnerCategory;
-  partnerId: string;
-  publicPrice: number;
-  memberPrice: number;
-  targetRules: {
-    isPublicAvailable: boolean;
-    companyType?: string[];
-  };
-}
-
-export interface NewsItem {
-  id: string;
-  title: string;
-  summary: string;
-  category: string;
-  date: string;
-  tags: string[];
-  imageUrl?: string;
-}
-
-export interface StandardProcedure {
-  id: string;
-  code: string;
-  type: ProcedureType;
-  scope: ProcedureScope;
-  title: string;
-  objective: string;
-  version: string;
-  lastUpdate: string;
-  content: string;
-  tags: string[];
-}
-
-export interface Partner {
-  id: string;
-  name: string;
-  category: PartnerCategory;
-  active: boolean;
-  commissionRate: number;
-}
-
-export interface MonitriipLog {
-  id: string;
-  vehicleId: string;
-  routeId: string;
-  timestamp: string;
-  status: 'SENT' | 'PENDING' | 'ERROR';
-  details: string;
-}
-
-export interface ClientComplianceStatus {
-  clientId: string;
-  companyName: string;
-  cnpj: string;
-  poaStatus: {
-    govBr: 'active' | 'pending' | 'expired';
-    wsDenatran: 'active' | 'pending' | 'expired';
-    expiryDate: string;
-  };
-}
-
-export interface Enrollment {
-  id: string;
-  studentName: string;
-  courseName: string;
-  partnerName: string;
-  requestDate: string;
-  status: 'pending' | 'active' | 'cancelled' | 'completed';
-  financials: {
-    value: number;
-    paymentStatus: 'pending' | 'paid' | 'overdue';
-    paymentMethod: 'pix' | 'credit_card' | 'boleto';
-    paymentDate?: string;
-  };
-  credentials?: {
-    login?: string;
-    password?: string;
-    accessLink?: string;
-  };
-}
-
-export interface TransportRoute {
-  id: string;
-  name: string;
-  originId: string;
-  destinationId: string;
-  riskScore: number;
-  status: 'OK' | 'WARNING' | 'CRITICAL';
-  pointsOfInterest: string[];
-}
-
-export interface GeoPoint {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
-  type: 'CITY' | 'HUB' | 'WEIGH_STATION' | 'RISK_ZONE';
-  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  details?: string;
-}
-
-export interface ClassifiedAd {
-  id: string;
-  type: string;
-  title: string;
-  price?: number;
-  description: string;
-  location: string;
-  contact: string;
-  sellerName: string;
-  sellerLevel: string;
-  date: string;
-  verified: boolean;
-  imageUrl?: string;
-}
-
-export interface VerifiedProvider {
-  id: string;
-  name: string;
-  segment: 'CARGO' | 'PASSENGER';
-  sealLevel: 'DIAMOND' | 'GOLD' | 'SILVER' | 'BRONZE' | 'STANDARD';
-  location: string;
-  fleetSize: number;
-  rating: number;
-  verified: boolean;
-}
-
-export interface FreightDemand {
-  type: 'CARGO' | 'PASSENGER';
-  origin: string;
-  destination: string;
-  date: string;
-  description: string;
-}
-
-// Risk Monitor Types
-export interface RiskEvent {
-  id: string;
-  type: 'THEFT' | 'ACCIDENT' | 'JAMMING' | 'STOP' | 'ROUTE_DEVIATION' | 'DOOR_OPEN';
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  vehicleId: string;
-  plate: string;
-  driverName: string;
-  location: string;
-  timestamp: Date;
-  status: 'ACTIVE' | 'RESOLVED' | 'INVESTIGATING';
-}
-
-// Placeholder interfaces
-export interface GovData {}
-export interface Infraction {}
-export interface Debt {}
-export interface InstallmentPlan {}
-export interface Transaction {}
-export interface Invoice {}
-export interface ServiceItem {}
-export interface Employee {}
-export interface TripValidationResult {}
-export interface Device {}
-export interface PassengerProfile {}
-export interface TravelPackage {}
-export interface EFrotasEvent {}
-export interface WeighingEvent {}
-export interface VehicleChecklist {}
-export interface ChecklistItem {}
-export interface ActionPlan5W2H {}
-export interface PassengerLevel {}
-export interface SmartNotification {}
